@@ -7,7 +7,7 @@ import android.widget.TextView;
 import com.github.lzyzsd.circleprogress.ArcProgress;
 
 import androidx.recyclerview.widget.RecyclerView;
-import ir.ashkanabd.filelight.partition.Storage;
+import ir.ashkanabd.filelight.storage.Storage;
 
 public class StorageViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 

@@ -1,10 +1,11 @@
-package ir.ashkanabd.filelight.partition;
+package ir.ashkanabd.filelight.storage;
 
 import java.io.File;
+import java.io.Serializable;
 
 import androidx.annotation.NonNull;
 
-public class Storage {
+public class Storage implements Serializable {
 
     private long totalSpace;
     private long freeSpace;

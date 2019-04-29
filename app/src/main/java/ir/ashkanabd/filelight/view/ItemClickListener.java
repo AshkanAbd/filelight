@@ -1,6 +1,6 @@
 package ir.ashkanabd.filelight.view;
 
-import ir.ashkanabd.filelight.partition.Storage;
+import ir.ashkanabd.filelight.storage.Storage;
 
 public interface ItemClickListener {
 

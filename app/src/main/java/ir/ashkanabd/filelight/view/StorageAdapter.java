@@ -13,7 +13,7 @@ import java.util.List;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import ir.ashkanabd.filelight.R;
-import ir.ashkanabd.filelight.partition.Storage;
+import ir.ashkanabd.filelight.storage.Storage;
 
 public class StorageAdapter extends RecyclerView.Adapter<StorageViewHolder> {
     private Context context;

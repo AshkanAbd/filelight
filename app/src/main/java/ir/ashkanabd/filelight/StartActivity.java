@@ -1,24 +1,21 @@
 package ir.ashkanabd.filelight;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import es.dmoral.toasty.Toasty;
 import ir.ashkanabd.filelight.background.BackgroundTask;
-import ir.ashkanabd.filelight.partition.Storage;
+import ir.ashkanabd.filelight.storage.Storage;
 import ir.ashkanabd.filelight.view.StorageAdapter;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
-import android.view.MotionEvent;
-import android.view.View;
-import android.widget.Toast;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -36,8 +33,8 @@ public class StartActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.start_activity);
         BackgroundTask backgroundTask = new BackgroundTask();
-        backgroundTask.setTaskExecute((_1) -> startTask());
-        backgroundTask.setPostExecute((_1) -> postExecute());
+        backgroundTask.setTaskExecute(_1 -> startTask());
+        backgroundTask.setPostExecute(_1 -> postExecute());
         backgroundTask.execute();
     }
 
@@ -80,7 +77,9 @@ public class StartActivity extends AppCompatActivity {
     }
 
     private void onStorageClicked(Storage storage) {
-        System.out.println(storage);
+        Intent intent = new Intent(this, ScanActivity.class);
+        intent.putExtra("storage", storage);
+        startActivity(intent);
     }
 
     private void findViews() {
