@@ -18,10 +18,12 @@ import ir.ashkanabd.filelight.partition.Storage;
 public class StorageAdapter extends RecyclerView.Adapter<StorageViewHolder> {
     private Context context;
     private List<Storage> storageList;
+    private ItemClickListener clickListener;
 
-    public StorageAdapter(Context context, List<Storage> storageList) {
+    public StorageAdapter(Context context, List<Storage> storageList, ItemClickListener clickListener) {
         this.context = context;
         this.storageList = storageList;
+        this.clickListener = clickListener;
     }
 
     @NonNull
@@ -32,7 +34,7 @@ public class StorageAdapter extends RecyclerView.Adapter<StorageViewHolder> {
         TextView freeSpace = layout.findViewById(R.id.free_space_text_view);
         TextView totalSpace = layout.findViewById(R.id.total_space_text_view);
         TextView nameStorage = layout.findViewById(R.id.storage_name_text_view);
-        StorageViewHolder viewHolder = new StorageViewHolder(layout);
+        StorageViewHolder viewHolder = new StorageViewHolder(layout, clickListener);
         viewHolder.setArcProgress(arcProgress);
         viewHolder.setFreeSpaceTextView(freeSpace);
         viewHolder.setTotalSpaceTextView(totalSpace);
@@ -45,9 +47,9 @@ public class StorageAdapter extends RecyclerView.Adapter<StorageViewHolder> {
         Storage storage = storageList.get(position);
         ArcProgress arcProgress = holder.getArcProgress();
         arcProgress.setProgress((int) storage.getPercent());
-        double freeSpaceToGB = storage.getFreeSpace() / (2 * Math.pow(10, 9));
+        double freeSpaceToGB = storage.getFreeSpace() / Math.pow(10, 9);
         freeSpaceToGB = round(freeSpaceToGB);
-        double totalSpaceToGB = storage.getTotalSpace() / (2 * Math.pow(10, 9));
+        double totalSpaceToGB = storage.getTotalSpace() / Math.pow(10, 9);
         totalSpaceToGB = round(totalSpaceToGB);
         holder.getFreeSpaceTextView().setText("Free : " + freeSpaceToGB + " GB");
         holder.getTotalSpaceTextView().setText("Total : " + totalSpaceToGB + " GB");

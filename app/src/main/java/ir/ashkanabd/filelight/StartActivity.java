@@ -72,7 +72,7 @@ public class StartActivity extends AppCompatActivity {
     }
 
     private void setupPartitionList() {
-        storageAdapter = new StorageAdapter(this, statusList);
+        storageAdapter = new StorageAdapter(this, statusList, this::onStorageClicked);
         GridLayoutManager layoutManager = new GridLayoutManager(this, 2);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(storageAdapter);

@@ -9,7 +9,7 @@ import com.github.lzyzsd.circleprogress.ArcProgress;
 import androidx.recyclerview.widget.RecyclerView;
 import ir.ashkanabd.filelight.partition.Storage;
 
-public class StorageViewHolder extends RecyclerView.ViewHolder {
+public class StorageViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
     private ArcProgress arcProgress;
     private RelativeLayout layout;
@@ -17,10 +17,13 @@ public class StorageViewHolder extends RecyclerView.ViewHolder {
     private TextView name;
     private TextView freeSpace;
     private Storage storage;
+    private ItemClickListener clickListener;
 
-    public StorageViewHolder(RelativeLayout layout) {
+    public StorageViewHolder(RelativeLayout layout, ItemClickListener clickListener) {
         super(layout);
         this.layout = layout;
+        this.clickListener = clickListener;
+        this.layout.setOnClickListener(this);
     }
 
     public ArcProgress getArcProgress() {
@@ -69,5 +72,10 @@ public class StorageViewHolder extends RecyclerView.ViewHolder {
 
     public void setStorage(Storage storage) {
         this.storage = storage;
+    }
+
+    @Override
+    public void onClick(View v) {
+        clickListener.onItemClicked(storage);
     }
 }
