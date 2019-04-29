@@ -49,23 +49,11 @@ public class StorageAdapter extends RecyclerView.Adapter<StorageViewHolder> {
         Storage storage = storageList.get(position);
         ArcProgress arcProgress = holder.getArcProgress();
         arcProgress.setProgress((int) storage.getPercent());
-        double freeSpaceToGB = storage.getFreeSpace() / Math.pow(10, 9);
-        freeSpaceToGB = round(freeSpaceToGB);
-        double totalSpaceToGB = storage.getTotalSpace() / Math.pow(10, 9);
-        totalSpaceToGB = round(totalSpaceToGB);
-        double usedSpaceToGB = (storage.getTotalSpace() - storage.getFreeSpace()) / Math.pow(10, 9);
-        usedSpaceToGB = round(usedSpaceToGB);
         holder.getNameTextView().setText("Name : " + storage.getPartitionName());
-        holder.getFreeSpaceTextView().setText("Free : " + freeSpaceToGB + " GB");
-        holder.getUsedSpace().setText("Used : " + usedSpaceToGB + " GB");
-        holder.getTotalSpaceTextView().setText("Total : " + totalSpaceToGB + " GB");
+        holder.getFreeSpaceTextView().setText("Free : " + Storage.getInBestFormat(storage.getFreeSpace()));
+        holder.getUsedSpace().setText("Used : " + Storage.getInBestFormat(storage.getUsedSpace()));
+        holder.getTotalSpaceTextView().setText("Total : " + Storage.getInBestFormat(storage.getTotalSpace()));
         holder.setStorage(storage);
-    }
-
-    private double round(double d) {
-        d = d * 100;
-        d = Math.round(d);
-        return d / 100;
     }
 
     @Override

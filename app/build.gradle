@@ -29,6 +29,8 @@ dependencies {
     implementation 'com.github.lzyzsd:circleprogress:1.2.1'
     implementation 'androidx.recyclerview:recyclerview:1.1.0-alpha04'
     implementation 'com.github.rey5137:material:1.2.5'
+    implementation 'com.afollestad.material-dialogs:core:2.0.3'
+    implementation 'com.github.glomadrian:loadingballs:1.1@aar'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.1.2-alpha02'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0-alpha02'

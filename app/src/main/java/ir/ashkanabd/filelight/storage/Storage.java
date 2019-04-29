@@ -9,12 +9,14 @@ public class Storage implements Serializable {
 
     private long totalSpace;
     private long freeSpace;
+    private long usedSpace;
     private String partitionName;
     private String path;
 
     public Storage(long totalSpace, long freeSpace, String partitionName, String path) {
         this.totalSpace = totalSpace;
         this.freeSpace = freeSpace;
+        this.usedSpace = totalSpace - freeSpace;
         this.partitionName = partitionName;
         this.path = path;
     }
@@ -23,12 +25,16 @@ public class Storage implements Serializable {
         this.partitionName = file.getName();
         this.freeSpace = file.getFreeSpace();
         this.totalSpace = file.getTotalSpace();
+        this.usedSpace = totalSpace - freeSpace;
         this.path = file.getAbsolutePath();
     }
 
     public double getPercent() {
-        long nonfree = totalSpace - freeSpace;
-        return 100 / (totalSpace / (double) nonfree);
+        return 100 / (totalSpace / (double) usedSpace);
+    }
+
+    public long getUsedSpace() {
+        return usedSpace;
     }
 
     public long getTotalSpace() {
@@ -53,6 +59,14 @@ public class Storage implements Serializable {
 
     public void setPartitionName(String partitionName) {
         this.partitionName = partitionName;
+    }
+
+    public String getPath() {
+        return path;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
     }
 
     @NonNull
@@ -83,11 +97,37 @@ public class Storage implements Serializable {
         return result;
     }
 
-    public String getPath() {
-        return path;
+    public static String getInBestFormat(double size) {
+        int best = findBestFormat(size);
+        double d = round(size / Math.pow(10, best * 3));
+        String s = Double.toString(d);
+        switch (best) {
+            case 0:
+            default:
+                return s + " B";
+            case 1:
+                return s + " KB";
+            case 2:
+                return s + " MB";
+            case 3:
+                return s + " GB";
+            case 4:
+                return s + " TB";
+        }
     }
 
-    public void setPath(String path) {
-        this.path = path;
+    private static int findBestFormat(double d) {
+        for (int i = 1; i < 5; i++) {
+            if (Math.pow(10, i * 3) > d) {
+                return i - 1;
+            }
+        }
+        return 0;
+    }
+
+    private static double round(double d) {
+        d = d * 100;
+        d = Math.round(d);
+        return d / 100;
     }
 }

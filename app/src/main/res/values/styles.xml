@@ -8,4 +8,18 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="scan_loading_style">
+        <item name="cpd_strokeColors">@array/loading_colors</item>
+        <item name="cpd_rotateDuration">1000</item>
+        <item name="cpd_padding">5dp</item>
+        <item name="cpd_transformDuration">700</item>
+    </style>
+
+    <array name="loading_colors">
+        <item>#408AF8</item>
+        <item>#D8433C</item>
+        <item>#F2AF3A</item>
+        <item>#279B5E</item>
+    </array>
+
 </resources>
