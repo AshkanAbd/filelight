@@ -2,15 +2,15 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="200dp"
-    android:layout_height="200dp"
+    android:layout_height="wrap_content"
     android:layout_gravity="center"
-    android:gravity="center">
+    android:padding="15dp">
 
     <com.github.lzyzsd.circleprogress.ArcProgress
         android:id="@+id/arc_progress"
         android:layout_width="100dp"
         android:layout_height="100dp"
-        android:layout_centerInParent="true"
+        android:layout_centerHorizontal="true"
         app:arc_bottom_text="status"
         app:arc_finished_color="@color/colorAccent"
         app:arc_unfinished_color="@color/colorPrimary" />
@@ -42,7 +42,7 @@
         android:textStyle="bold" />
 
     <TextView
-        android:id="@+id/total_space_text_view"
+        android:id="@+id/used_space_text_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/free_space_text_view"
@@ -50,8 +50,21 @@
         android:layout_alignEnd="@id/arc_progress"
         android:layout_marginTop="2dp"
         android:gravity="center"
-        android:textSize="10dp"
         android:textColor="@color/colorPrimary"
+        android:textSize="10dp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/total_space_text_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/used_space_text_view"
+        android:layout_alignStart="@id/arc_progress"
+        android:layout_alignEnd="@id/arc_progress"
+        android:layout_marginTop="2dp"
+        android:gravity="center"
+        android:textColor="@color/colorPrimary"
+        android:textSize="10dp"
         android:textStyle="bold" />
 
 </RelativeLayout>

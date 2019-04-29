@@ -34,11 +34,13 @@ public class StorageAdapter extends RecyclerView.Adapter<StorageViewHolder> {
         TextView freeSpace = layout.findViewById(R.id.free_space_text_view);
         TextView totalSpace = layout.findViewById(R.id.total_space_text_view);
         TextView nameStorage = layout.findViewById(R.id.storage_name_text_view);
+        TextView usedSpace = layout.findViewById(R.id.used_space_text_view);
         StorageViewHolder viewHolder = new StorageViewHolder(layout, clickListener);
         viewHolder.setArcProgress(arcProgress);
         viewHolder.setFreeSpaceTextView(freeSpace);
         viewHolder.setTotalSpaceTextView(totalSpace);
         viewHolder.setNameTextView(nameStorage);
+        viewHolder.setUsedSpace(usedSpace);
         return viewHolder;
     }
 
@@ -51,21 +53,19 @@ public class StorageAdapter extends RecyclerView.Adapter<StorageViewHolder> {
         freeSpaceToGB = round(freeSpaceToGB);
         double totalSpaceToGB = storage.getTotalSpace() / Math.pow(10, 9);
         totalSpaceToGB = round(totalSpaceToGB);
-        holder.getFreeSpaceTextView().setText("Free : " + freeSpaceToGB + " GB");
-        holder.getTotalSpaceTextView().setText("Total : " + totalSpaceToGB + " GB");
+        double usedSpaceToGB = (storage.getTotalSpace() - storage.getFreeSpace()) / Math.pow(10, 9);
+        usedSpaceToGB = round(usedSpaceToGB);
         holder.getNameTextView().setText("Name : " + storage.getPartitionName());
+        holder.getFreeSpaceTextView().setText("Free : " + freeSpaceToGB + " GB");
+        holder.getUsedSpace().setText("Used : " + usedSpaceToGB + " GB");
+        holder.getTotalSpaceTextView().setText("Total : " + totalSpaceToGB + " GB");
         holder.setStorage(storage);
     }
 
     private double round(double d) {
-        String s = Double.toString(d);
-        int dotIndex = s.indexOf('.');
-        StringBuilder builder = new StringBuilder(s.substring(0, dotIndex));
-        s = s.substring(dotIndex, s.length());
-        for (int i = 0; i < 3; i++) {
-            builder.append(s.charAt(i));
-        }
-        return Double.parseDouble(builder.toString());
+        d = d * 100;
+        d = Math.round(d);
+        return d / 100;
     }
 
     @Override

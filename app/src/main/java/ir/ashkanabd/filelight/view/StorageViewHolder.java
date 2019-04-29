@@ -16,6 +16,7 @@ public class StorageViewHolder extends RecyclerView.ViewHolder implements View.O
     private TextView totalSpace;
     private TextView name;
     private TextView freeSpace;
+    private TextView usedSpace;
     private Storage storage;
     private ItemClickListener clickListener;
 
@@ -72,6 +73,14 @@ public class StorageViewHolder extends RecyclerView.ViewHolder implements View.O
 
     public void setStorage(Storage storage) {
         this.storage = storage;
+    }
+
+    public TextView getUsedSpace() {
+        return usedSpace;
+    }
+
+    public void setUsedSpace(TextView usedSpace) {
+        this.usedSpace = usedSpace;
     }
 
     @Override
