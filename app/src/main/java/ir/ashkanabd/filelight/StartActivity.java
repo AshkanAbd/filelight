@@ -5,7 +5,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import es.dmoral.toasty.Toasty;
 import ir.ashkanabd.filelight.background.BackgroundTask;
 import ir.ashkanabd.filelight.view.PartitionAdapter;
-import ir.ashkanabd.filelight.view.PhotosAdapter;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
