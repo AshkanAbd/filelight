@@ -1,9 +1,12 @@
 package ir.ashkanabd.filelight;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import es.dmoral.toasty.Toasty;
 import ir.ashkanabd.filelight.background.BackgroundTask;
+import ir.ashkanabd.filelight.partition.PartitionStatus;
 import ir.ashkanabd.filelight.view.PartitionAdapter;
 
 import android.Manifest;
@@ -11,9 +14,8 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.MotionEvent;
 
-import com.fivehundredpx.greedolayout.GreedoLayoutManager;
-import com.fivehundredpx.greedolayout.GreedoSpacingItemDecoration;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,13 +24,12 @@ public class StartActivity extends AppCompatActivity {
 
     private boolean backPress = false;
     private static String LOGGER = "FileLight";
-    private BackgroundTask backgroundTask;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.start_activity);
-        backgroundTask = new BackgroundTask();
+        BackgroundTask backgroundTask = new BackgroundTask();
         backgroundTask.setTaskExecute((_1) -> checkPermission());
         backgroundTask.setPostExecute((_1) -> postExecute());
         backgroundTask.execute();
@@ -41,19 +42,14 @@ public class StartActivity extends AppCompatActivity {
 
     private void findViews() {
         List<PartitionStatus> statusList = new ArrayList<>();
-        statusList.add(new PartitionStatus(1000, 250,"internal"));
-        statusList.add(new PartitionStatus(1000, 640,"sdcard"));
+        statusList.add(new PartitionStatus(1000, 250, "internal"));
+        statusList.add(new PartitionStatus(1000, 640, "sdcard"));
         PartitionAdapter photosAdapter = new PartitionAdapter(this, statusList);
-        GreedoLayoutManager layoutManager = new GreedoLayoutManager(photosAdapter);
-        layoutManager.setMaxRowHeight(MeasUtils.dpToPx(150, this));
-
+        GridLayoutManager layoutManager = new GridLayoutManager(this, 2);
         RecyclerView recyclerView = findViewById(R.id.recycle_view);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(photosAdapter);
-
-        int spacing = MeasUtils.dpToPx(5, this);
-        recyclerView.addItemDecoration(new GreedoSpacingItemDecoration(spacing));
-        layoutManager.requestLayout();
+        recyclerView.setHasFixedSize(true);
     }
 
     private Void checkPermission() {

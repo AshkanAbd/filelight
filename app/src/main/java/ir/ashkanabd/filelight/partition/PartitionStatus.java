@@ -1,4 +1,4 @@
-package ir.ashkanabd.filelight;
+package ir.ashkanabd.filelight.partition;
 
 import androidx.annotation.NonNull;
 
@@ -14,8 +14,8 @@ public class PartitionStatus {
         this.partitionName = partitionName;
     }
 
-    public int getPercent() {
-        return 100 / (totalSpace / freeSpace);
+    public double getPercent() {
+        return 100 / (totalSpace / (double) freeSpace);
     }
 
     public int getTotalSpace() {

@@ -1,22 +1,21 @@
 package ir.ashkanabd.filelight.view;
 
 import android.content.Context;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
-import com.fivehundredpx.greedolayout.GreedoLayoutSizeCalculator;
 import com.github.lzyzsd.circleprogress.ArcProgress;
 
 import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-import ir.ashkanabd.filelight.MeasUtils;
-import ir.ashkanabd.filelight.PartitionStatus;
+import ir.ashkanabd.filelight.R;
+import ir.ashkanabd.filelight.partition.PartitionStatus;
 
-public class PartitionAdapter extends RecyclerView.Adapter<PartitionViewHolder> implements GreedoLayoutSizeCalculator.SizeCalculatorDelegate {
+public class PartitionAdapter extends RecyclerView.Adapter<PartitionViewHolder> {
     private Context context;
     private List<PartitionStatus> partitionStatusList;
 
@@ -25,16 +24,14 @@ public class PartitionAdapter extends RecyclerView.Adapter<PartitionViewHolder> 
         this.partitionStatusList = partitionStatusList;
     }
 
-    @Override
-    public double aspectRatioForIndex(int i) {
-        return 1;
-    }
-
     @NonNull
     @Override
     public PartitionViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        ArcProgress arcProgress = new ArcProgress(context);
-        return new PartitionViewHolder(arcProgress);
+        RelativeLayout layout = (RelativeLayout) LayoutInflater.from(context).inflate(R.layout.partition_layout, parent, false);
+        ArcProgress arcProgress = layout.findViewById(R.id.arc_progress);
+        PartitionViewHolder viewHolder = new PartitionViewHolder(layout);
+        viewHolder.setArcProgress(arcProgress);
+        return viewHolder;
     }
 
     @Override
@@ -42,14 +39,7 @@ public class PartitionAdapter extends RecyclerView.Adapter<PartitionViewHolder> 
         ArcProgress arcProgress = holder.getArcProgress();
         PartitionStatus status = partitionStatusList.get(position);
         arcProgress.setBottomText(status.getPartitionName());
-        arcProgress.setProgress(status.getPercent());
-        arcProgress.setBackgroundColor(Color.parseColor("#214193"));
-        RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(
-                MeasUtils.dpToPx(100, context), MeasUtils.dpToPx(100, context));
-        layoutParams.setMarginStart(MeasUtils.dpToPx(50, context));
-        layoutParams.setMarginEnd(MeasUtils.dpToPx(50, context));
-        arcProgress.setLayoutParams(layoutParams);
-        System.out.println();
+        arcProgress.setProgress((int) status.getPercent());
     }
 
     @Override

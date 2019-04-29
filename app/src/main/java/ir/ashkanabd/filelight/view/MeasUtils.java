@@ -1,4 +1,4 @@
-package ir.ashkanabd.filelight;
+package ir.ashkanabd.filelight.view;
 
 import android.content.Context;
 import android.util.TypedValue;

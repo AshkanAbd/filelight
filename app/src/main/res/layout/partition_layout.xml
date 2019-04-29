@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="200dp"
+    android:layout_height="200dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_gravity="center"
+    android:gravity="center">
+
+    <com.github.lzyzsd.circleprogress.ArcProgress
+        android:id="@+id/arc_progress"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_centerInParent="true"
+        app:arc_progress="50"
+        app:arc_bottom_text="sd card"
+        app:arc_text_color="@color/colorPrimary"
+        app:arc_unfinished_color="@color/colorPrimary"
+        app:arc_finished_color="@color/colorAccent" />
+
+</RelativeLayout>

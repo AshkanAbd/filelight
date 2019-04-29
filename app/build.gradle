@@ -26,9 +26,9 @@ dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'androidx.appcompat:appcompat:1.1.0-alpha03'
     implementation 'com.github.GrenderG:Toasty:1.4.2'
-    implementation 'com.fivehundredpx:greedo-layout:1.1.0'
-    implementation 'com.squareup.picasso:picasso:2.5.2'
     implementation 'com.github.lzyzsd:circleprogress:1.2.1'
+    implementation 'androidx.recyclerview:recyclerview:1.1.0-alpha04'
+    implementation 'com.github.rey5137:material:1.2.5'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.1.2-alpha02'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0-alpha02'
