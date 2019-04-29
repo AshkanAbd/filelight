@@ -11,17 +11,28 @@
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:layout_centerInParent="true"
-        app:arc_bottom_text="sd card"
+        app:arc_bottom_text="status"
         app:arc_finished_color="@color/colorAccent"
-        app:arc_progress="50"
-        app:arc_text_color="@color/colorPrimary"
         app:arc_unfinished_color="@color/colorPrimary" />
+
+    <TextView
+        android:id="@+id/storage_name_text_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/arc_progress"
+        android:layout_alignStart="@id/arc_progress"
+        android:layout_alignEnd="@id/arc_progress"
+        android:layout_marginTop="2dp"
+        android:gravity="center"
+        android:textColor="@color/colorPrimary"
+        android:textSize="10dp"
+        android:textStyle="bold" />
 
     <TextView
         android:id="@+id/free_space_text_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/arc_progress"
+        android:layout_below="@id/storage_name_text_view"
         android:layout_alignStart="@id/arc_progress"
         android:layout_alignEnd="@id/arc_progress"
         android:layout_marginTop="2dp"

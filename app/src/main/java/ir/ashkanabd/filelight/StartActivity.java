@@ -1,12 +1,12 @@
 package ir.ashkanabd.filelight;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import es.dmoral.toasty.Toasty;
 import ir.ashkanabd.filelight.background.BackgroundTask;
-import ir.ashkanabd.filelight.partition.PartitionStatus;
-import ir.ashkanabd.filelight.partition.StorageUtils;
+import ir.ashkanabd.filelight.partition.Storage;
 import ir.ashkanabd.filelight.view.PartitionAdapter;
 
 import android.Manifest;
@@ -15,18 +15,19 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.util.Log;
 
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Arrays;
 
 public class StartActivity extends AppCompatActivity {
 
     private boolean backPress = false;
     private static String LOGGER = "FileLight";
     private RecyclerView recyclerView;
-    private List<PartitionStatus> statusList;
+    private ArrayList<Storage> statusList;
     private PartitionAdapter partitionAdapter;
 
     @Override
@@ -53,20 +54,20 @@ public class StartActivity extends AppCompatActivity {
     private void findPartition() {
         statusList = new ArrayList<>();
         statusList.add(getInternalStorage());
-        for (StorageUtils.StorageInfo s : StorageUtils.getStorageList()) {
-            System.err.println(s.getDisplayName());
-            System.err.println("--------");
+        for (File file : ContextCompat.getExternalFilesDirs(this, null)) {
+            File file1 = file.getParentFile().getParentFile().getParentFile().getParentFile();
+            Storage storage = new Storage(file1);
+            if (!statusList.contains(storage)) {
+                statusList.add(storage);
+            }
         }
-
     }
 
-    private PartitionStatus getInternalStorage() {
+    private Storage getInternalStorage() {
         File file = Environment.getExternalStorageDirectory();
-        PartitionStatus partitionStatus = new PartitionStatus();
-        partitionStatus.setPartitionName("Internal");
-        partitionStatus.setFreeSpace(file.getFreeSpace());
-        partitionStatus.setTotalSpace(file.getTotalSpace());
-        return partitionStatus;
+        Storage storage = new Storage(file);
+        storage.setPartitionName("Internal");
+        return storage;
     }
 
     private void setupPartitionList() {

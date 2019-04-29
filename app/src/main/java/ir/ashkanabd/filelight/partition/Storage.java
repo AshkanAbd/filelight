@@ -1,21 +1,31 @@
 package ir.ashkanabd.filelight.partition;
 
+import java.io.File;
+
 import androidx.annotation.NonNull;
 
-public class PartitionStatus {
+public class Storage {
 
     private long totalSpace;
     private long freeSpace;
     private String partitionName;
     private String path;
 
-    public PartitionStatus(long totalSpace, long freeSpace, String partitionName) {
+    public Storage(long totalSpace, long freeSpace, String partitionName, String path) {
         this.totalSpace = totalSpace;
         this.freeSpace = freeSpace;
         this.partitionName = partitionName;
+        this.path = path;
     }
 
-    public PartitionStatus() {
+    public Storage(File file) {
+        this.partitionName = file.getName();
+        this.freeSpace = file.getFreeSpace();
+        this.totalSpace = file.getTotalSpace();
+        this.path = file.getAbsolutePath();
+    }
+
+    public Storage() {
     }
 
     public double getPercent() {
@@ -50,7 +60,7 @@ public class PartitionStatus {
     @NonNull
     @Override
     public String toString() {
-        return "PartitionStatus{" +
+        return "Storage{" +
                 "totalSpace=" + totalSpace +
                 ", freeSpace=" + freeSpace +
                 ", partitionName='" + partitionName + '\'' +
@@ -63,11 +73,8 @@ public class PartitionStatus {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        PartitionStatus that = (PartitionStatus) o;
-
-        if (totalSpace != that.totalSpace) return false;
-        if (freeSpace != that.freeSpace) return false;
-        return partitionName.equals(that.partitionName);
+        Storage that = (Storage) o;
+        return path.equals(that.path);
     }
 
     @Override

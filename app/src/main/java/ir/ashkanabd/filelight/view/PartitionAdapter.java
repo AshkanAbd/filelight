@@ -13,15 +13,15 @@ import java.util.List;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import ir.ashkanabd.filelight.R;
-import ir.ashkanabd.filelight.partition.PartitionStatus;
+import ir.ashkanabd.filelight.partition.Storage;
 
 public class PartitionAdapter extends RecyclerView.Adapter<PartitionViewHolder> {
     private Context context;
-    private List<PartitionStatus> partitionStatusList;
+    private List<Storage> storageList;
 
-    public PartitionAdapter(Context context, List<PartitionStatus> partitionStatusList) {
+    public PartitionAdapter(Context context, List<Storage> storageList) {
         this.context = context;
-        this.partitionStatusList = partitionStatusList;
+        this.storageList = storageList;
     }
 
     @NonNull
@@ -31,25 +31,28 @@ public class PartitionAdapter extends RecyclerView.Adapter<PartitionViewHolder> 
         ArcProgress arcProgress = layout.findViewById(R.id.arc_progress);
         TextView freeSpace = layout.findViewById(R.id.free_space_text_view);
         TextView totalSpace = layout.findViewById(R.id.total_space_text_view);
+        TextView nameStorage = layout.findViewById(R.id.storage_name_text_view);
         PartitionViewHolder viewHolder = new PartitionViewHolder(layout);
         viewHolder.setArcProgress(arcProgress);
         viewHolder.setFreeSpaceTextView(freeSpace);
         viewHolder.setTotalSpaceTextView(totalSpace);
+        viewHolder.setNameTextView(nameStorage);
         return viewHolder;
     }
 
     @Override
     public void onBindViewHolder(@NonNull PartitionViewHolder holder, int position) {
+        Storage storage = storageList.get(position);
         ArcProgress arcProgress = holder.getArcProgress();
-        PartitionStatus status = partitionStatusList.get(position);
-        arcProgress.setBottomText(status.getPartitionName());
-        arcProgress.setProgress((int) status.getPercent());
-        double freeSpaceToGB = status.getFreeSpace() / (2 * Math.pow(10, 9));
+        arcProgress.setProgress((int) storage.getPercent());
+        double freeSpaceToGB = storage.getFreeSpace() / (2 * Math.pow(10, 9));
         freeSpaceToGB = round(freeSpaceToGB);
-        double totalSpaceToGB = status.getTotalSpace() / (2 * Math.pow(10, 9));
+        double totalSpaceToGB = storage.getTotalSpace() / (2 * Math.pow(10, 9));
         totalSpaceToGB = round(totalSpaceToGB);
         holder.getFreeSpaceTextView().setText("Free : " + freeSpaceToGB + " GB");
         holder.getTotalSpaceTextView().setText("Total : " + totalSpaceToGB + " GB");
+        holder.getNameTextView().setText("Name : " + storage.getPartitionName());
+        holder.setStorage(storage);
     }
 
     private double round(double d) {
@@ -65,14 +68,14 @@ public class PartitionAdapter extends RecyclerView.Adapter<PartitionViewHolder> 
 
     @Override
     public int getItemCount() {
-        return partitionStatusList.size();
+        return storageList.size();
     }
 
-    public List<PartitionStatus> getPartitionStatusList() {
-        return partitionStatusList;
+    public List<Storage> getStorageList() {
+        return storageList;
     }
 
-    public void setPartitionStatusList(List<PartitionStatus> partitionStatusList) {
-        this.partitionStatusList = partitionStatusList;
+    public void setStorageList(List<Storage> storageList) {
+        this.storageList = storageList;
     }
 }

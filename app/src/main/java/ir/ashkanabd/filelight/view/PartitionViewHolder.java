@@ -6,13 +6,16 @@ import android.widget.TextView;
 import com.github.lzyzsd.circleprogress.ArcProgress;
 
 import androidx.recyclerview.widget.RecyclerView;
+import ir.ashkanabd.filelight.partition.Storage;
 
 public class PartitionViewHolder extends RecyclerView.ViewHolder {
 
     private ArcProgress arcProgress;
     private RelativeLayout layout;
     private TextView totalSpace;
+    private TextView name;
     private TextView freeSpace;
+    private Storage storage;
 
     public PartitionViewHolder(RelativeLayout layout) {
         super(layout);
@@ -49,5 +52,21 @@ public class PartitionViewHolder extends RecyclerView.ViewHolder {
 
     public void setFreeSpaceTextView(TextView freeSpace) {
         this.freeSpace = freeSpace;
+    }
+
+    public TextView getNameTextView() {
+        return name;
+    }
+
+    public void setNameTextView(TextView name) {
+        this.name = name;
+    }
+
+    public Storage getStorage() {
+        return storage;
+    }
+
+    public void setStorage(Storage storage) {
+        this.storage = storage;
     }
 }
