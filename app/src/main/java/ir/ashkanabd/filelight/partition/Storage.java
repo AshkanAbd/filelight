@@ -25,9 +25,6 @@ public class Storage {
         this.path = file.getAbsolutePath();
     }
 
-    public Storage() {
-    }
-
     public double getPercent() {
         long nonfree = totalSpace - freeSpace;
         return 100 / (totalSpace / (double) nonfree);

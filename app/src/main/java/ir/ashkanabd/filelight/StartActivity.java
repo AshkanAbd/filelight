@@ -1,5 +1,6 @@
 package ir.ashkanabd.filelight;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -7,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import es.dmoral.toasty.Toasty;
 import ir.ashkanabd.filelight.background.BackgroundTask;
 import ir.ashkanabd.filelight.partition.Storage;
-import ir.ashkanabd.filelight.view.PartitionAdapter;
+import ir.ashkanabd.filelight.view.StorageAdapter;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
@@ -15,12 +16,12 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
-import android.util.Log;
-
+import android.view.MotionEvent;
+import android.view.View;
+import android.widget.Toast;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class StartActivity extends AppCompatActivity {
 
@@ -28,7 +29,7 @@ public class StartActivity extends AppCompatActivity {
     private static String LOGGER = "FileLight";
     private RecyclerView recyclerView;
     private ArrayList<Storage> statusList;
-    private PartitionAdapter partitionAdapter;
+    private StorageAdapter storageAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,11 +72,15 @@ public class StartActivity extends AppCompatActivity {
     }
 
     private void setupPartitionList() {
-        partitionAdapter = new PartitionAdapter(this, statusList);
+        storageAdapter = new StorageAdapter(this, statusList);
         GridLayoutManager layoutManager = new GridLayoutManager(this, 2);
         recyclerView.setLayoutManager(layoutManager);
-        recyclerView.setAdapter(partitionAdapter);
+        recyclerView.setAdapter(storageAdapter);
         recyclerView.setHasFixedSize(true);
+    }
+
+    private void onStorageClicked(Storage storage) {
+        System.out.println(storage);
     }
 
     private void findViews() {

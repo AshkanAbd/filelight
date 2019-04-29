@@ -15,24 +15,24 @@ import androidx.recyclerview.widget.RecyclerView;
 import ir.ashkanabd.filelight.R;
 import ir.ashkanabd.filelight.partition.Storage;
 
-public class PartitionAdapter extends RecyclerView.Adapter<PartitionViewHolder> {
+public class StorageAdapter extends RecyclerView.Adapter<StorageViewHolder> {
     private Context context;
     private List<Storage> storageList;
 
-    public PartitionAdapter(Context context, List<Storage> storageList) {
+    public StorageAdapter(Context context, List<Storage> storageList) {
         this.context = context;
         this.storageList = storageList;
     }
 
     @NonNull
     @Override
-    public PartitionViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public StorageViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         RelativeLayout layout = (RelativeLayout) LayoutInflater.from(context).inflate(R.layout.partition_layout, parent, false);
         ArcProgress arcProgress = layout.findViewById(R.id.arc_progress);
         TextView freeSpace = layout.findViewById(R.id.free_space_text_view);
         TextView totalSpace = layout.findViewById(R.id.total_space_text_view);
         TextView nameStorage = layout.findViewById(R.id.storage_name_text_view);
-        PartitionViewHolder viewHolder = new PartitionViewHolder(layout);
+        StorageViewHolder viewHolder = new StorageViewHolder(layout);
         viewHolder.setArcProgress(arcProgress);
         viewHolder.setFreeSpaceTextView(freeSpace);
         viewHolder.setTotalSpaceTextView(totalSpace);
@@ -41,7 +41,7 @@ public class PartitionAdapter extends RecyclerView.Adapter<PartitionViewHolder> 
     }
 
     @Override
-    public void onBindViewHolder(@NonNull PartitionViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull StorageViewHolder holder, int position) {
         Storage storage = storageList.get(position);
         ArcProgress arcProgress = holder.getArcProgress();
         arcProgress.setProgress((int) storage.getPercent());

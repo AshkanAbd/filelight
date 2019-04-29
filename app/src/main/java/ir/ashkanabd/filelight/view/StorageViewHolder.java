@@ -1,5 +1,6 @@
 package ir.ashkanabd.filelight.view;
 
+import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -8,7 +9,7 @@ import com.github.lzyzsd.circleprogress.ArcProgress;
 import androidx.recyclerview.widget.RecyclerView;
 import ir.ashkanabd.filelight.partition.Storage;
 
-public class PartitionViewHolder extends RecyclerView.ViewHolder {
+public class StorageViewHolder extends RecyclerView.ViewHolder {
 
     private ArcProgress arcProgress;
     private RelativeLayout layout;
@@ -17,7 +18,7 @@ public class PartitionViewHolder extends RecyclerView.ViewHolder {
     private TextView freeSpace;
     private Storage storage;
 
-    public PartitionViewHolder(RelativeLayout layout) {
+    public StorageViewHolder(RelativeLayout layout) {
         super(layout);
         this.layout = layout;
     }
