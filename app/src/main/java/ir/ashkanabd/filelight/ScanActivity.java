@@ -16,7 +16,6 @@ import android.view.View;
 import android.widget.RelativeLayout;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
@@ -127,7 +126,7 @@ public class ScanActivity extends AppCompatActivity {
             pieChart.setVisibility(View.GONE);
             setupChart(storageEntry.getNodeList());
         } else {
-            if (!storageEntry.getNode().getChildren().isEmpty()) {
+            if (!storageEntry.getNode().getChildren().isEmpty() && !storageEntry.getNode().isAllFiles()) {
                 currentNode = storageEntry.getNode();
                 pieChart.setVisibility(View.GONE);
                 setupChart(currentNode.getChildren());

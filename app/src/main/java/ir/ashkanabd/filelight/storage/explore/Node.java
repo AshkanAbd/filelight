@@ -12,6 +12,7 @@ public class Node {
     private long length;
     private List<Node> children;
     private Node parent;
+    private boolean allFiles = true;
 
     public Node() {
         root = true;
@@ -29,6 +30,9 @@ public class Node {
 
     public void addChild(Node node) {
         children.add(node);
+        if (node.file.isDirectory()) {
+            allFiles = false;
+        }
     }
 
     public List<Node> getChildren() {
@@ -53,6 +57,10 @@ public class Node {
 
     public long getLength() {
         return length;
+    }
+
+    public boolean isAllFiles() {
+        return allFiles;
     }
 
     @Override
