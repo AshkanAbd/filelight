@@ -1,6 +1,8 @@
 package ir.ashkanabd.filelight;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import es.dmoral.toasty.Toasty;
 import ir.ashkanabd.filelight.background.BackgroundTask;
 import ir.ashkanabd.filelight.storage.Storage;
 import ir.ashkanabd.filelight.storage.explore.Explorer;
@@ -10,7 +12,9 @@ import ir.ashkanabd.filelight.view.StorageEntry;
 import ir.ashkanabd.filelight.view.StoragePieChart;
 import ir.ashkanabd.filelight.view.StorageRenderer;
 
+import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.RelativeLayout;
@@ -23,7 +27,10 @@ import com.github.mikephil.charting.utils.Utils;
 
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 public class ScanActivity extends AppCompatActivity {
@@ -34,6 +41,8 @@ public class ScanActivity extends AppCompatActivity {
     private StoragePieChart pieChart;
     private Node rootNode;
     private Node currentNode;
+    private Node selectedNode;
+    private boolean isOther = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,26 +92,12 @@ public class ScanActivity extends AppCompatActivity {
     }
 
     private void setupChart(List<Node> nodeList) {
-        List<PieEntry> entryList = new ArrayList<>();
-        StorageEntry other = new StorageEntry(0, "Other");
-        for (Node child : nodeList) {
-            if (child.getLength() < Math.pow(10, 3)) {
-                other.setY(other.getY() + child.getLength());
-                other.addNode(child);
-                continue;
-            }
-            StorageEntry entry = new StorageEntry(child.getLength(), child.getFile().getName());
-            entry.setStorageType(Storage.getStorageType(child.getLength()));
-            entry.setNode(child);
-            entryList.add(entry);
-        }
-        if (other.getY() != 0) {
-            other.setStorageType(Storage.getStorageType(other.getY()));
-            entryList.add(other);
-        }
+        Runtime.getRuntime().gc();
+        List<PieEntry> entryList = createEntryList(nodeList);
         PieDataSet pieDataSet = new PieDataSet(entryList, null);
         pieDataSet.setColors(Color.parseColor("#408AF8"), Color.parseColor("#D8433C")
                 , Color.parseColor("#F2AF3A"), Color.parseColor("#279B5E"));
+        Collections.shuffle(pieDataSet.getColors());
         pieDataSet.setSliceSpace(2);
         pieDataSet.setValueTextColor(Color.WHITE);
         pieDataSet.setValueTextSize(15);
@@ -117,19 +112,75 @@ public class ScanActivity extends AppCompatActivity {
         pieChart.setRenderer(renderer);
         pieChart.getLegend().setEnabled(false);
         pieChart.setData(pieData);
-        pieChart.setCenterTextSize(20);
-        pieChart.setCenterText(storage.getName() + " storage");
+        pieChart.setCenterTextSize(15);
+        pieChart.setCenterText(currentNode.getFile().getAbsolutePath() + "\n\nsize: " + Storage.getInBestFormat(currentNode.getLength()));
+    }
+
+    private List<PieEntry> createEntryList(List<Node> nodeList) {
+        StorageEntry hidden = new StorageEntry(0, ".Hidden");
+        List<Node> removeList = new ArrayList<>();
+        List<PieEntry> entryList = new ArrayList<>();
+        for (Node node : nodeList) {
+            if (node.getFile().isHidden() && node.getFile().isDirectory()) {
+                hidden.setY(hidden.getY() + node.getLength());
+                hidden.addNode(node);
+                removeList.add(node);
+            }
+        }
+        if (hidden.getY() != 0) {
+            entryList.add(hidden);
+        }
+        nodeList.removeAll(removeList);
+        LinkedHashMap<Node, Long> childrenMap = getChildrenMap(nodeList);
+        StorageEntry other = new StorageEntry(0, "Other");
+        int left = 7 - entryList.size();
+        for (Map.Entry<Node, Long> entry : childrenMap.entrySet()) {
+            if (entry.getKey().getFile().isFile()) continue;
+            if (left != 0) {
+                left--;
+                StorageEntry storageEntry = new StorageEntry(entry.getValue(), entry.getKey().getFile().getName());
+                storageEntry.setNode(entry.getKey());
+                entryList.add(storageEntry);
+            } else {
+                other.setY(other.getY() + entry.getValue());
+                other.addNode(entry.getKey());
+            }
+        }
+        if (other.getY() != 0) {
+            entryList.add(other);
+        }
+        Collections.sort(entryList, (o1, o2) -> Float.compare(o1.getY(), o2.getY()));
+        return entryList;
+    }
+
+    private LinkedHashMap<Node, Long> getChildrenMap(List<Node> nodeList) {
+        LinkedHashMap<Node, Long> map = new LinkedHashMap<>();
+        for (Node node : nodeList) {
+            map.put(node, node.getLength());
+        }
+        List<Map.Entry<Node, Long>> entryList = new ArrayList<>(map.entrySet());
+        Collections.sort(entryList, (o1, o2) -> Long.compare(o2.getValue(), o1.getValue()));
+        map.clear();
+        for (Map.Entry<Node, Long> entry : entryList) {
+            map.put(entry.getKey(), entry.getValue());
+        }
+        return map;
     }
 
     private void onChartClicked(StorageEntry storageEntry) {
         if (storageEntry.getNode() == null) {
             pieChart.setVisibility(View.GONE);
             setupChart(storageEntry.getNodeList());
+            isOther = true;
+            selectedNode = null;
         } else {
             if (!storageEntry.getNode().getChildren().isEmpty() && !storageEntry.getNode().isAllFiles()) {
                 currentNode = storageEntry.getNode();
                 pieChart.setVisibility(View.GONE);
                 setupChart(currentNode.getChildren());
+                selectedNode = null;
+            } else {
+                selectedNode = storageEntry.getNode();
             }
         }
     }
@@ -137,7 +188,7 @@ public class ScanActivity extends AppCompatActivity {
     private StoragePieChart createChart() {
         StoragePieChart pieChart = new StoragePieChart(this);
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(-1, -1);
-        int margin = MeasUtils.pxToDp(20, this);
+        int margin = MeasUtils.pxToDp(30, this);
         params.setMargins(margin, margin, margin, margin);
         params.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
         pieChart.setLayoutParams(params);
@@ -146,10 +197,38 @@ public class ScanActivity extends AppCompatActivity {
     }
 
     public void backToParent(View view) {
-        if (currentNode.getParent() != null) {
+        if (isOther) {
+            isOther = false;
+            pieChart.setVisibility(View.GONE);
+            setupChart(currentNode.getChildren());
+            return;
+        }
+        if (currentNode.getParent() != null && currentNode.getParent().getFile() != null) {
             pieChart.setVisibility(View.GONE);
             currentNode = currentNode.getParent();
             setupChart(currentNode.getChildren());
         }
+        selectedNode = null;
+    }
+
+    public void openInExplorer(View view) {
+        Uri selectedUri;
+        if (selectedNode != null)
+            selectedUri = Uri.parse(selectedNode.getFile().getAbsolutePath());
+        else
+            selectedUri = Uri.parse(currentNode.getFile().getAbsolutePath());
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setDataAndType(selectedUri, "resource/folder");
+        System.out.println(selectedUri);
+        if (intent.resolveActivityInfo(getPackageManager(), 0) != null) {
+            startActivity(intent);
+        } else {
+            Toasty.error(this, "Please install a file explorer app", Toasty.LENGTH_LONG, true).show();
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        System.out.println(data);
     }
 }
