@@ -49,7 +49,7 @@ public class StorageAdapter extends RecyclerView.Adapter<StorageViewHolder> {
         Storage storage = storageList.get(position);
         ArcProgress arcProgress = holder.getArcProgress();
         arcProgress.setProgress((int) storage.getPercent());
-        holder.getNameTextView().setText("Name : " + storage.getPartitionName());
+        holder.getNameTextView().setText("Name : " + storage.getName());
         holder.getFreeSpaceTextView().setText("Free : " + Storage.getInBestFormat(storage.getFreeSpace()));
         holder.getUsedSpace().setText("Used : " + Storage.getInBestFormat(storage.getUsedSpace()));
         holder.getTotalSpaceTextView().setText("Total : " + Storage.getInBestFormat(storage.getTotalSpace()));

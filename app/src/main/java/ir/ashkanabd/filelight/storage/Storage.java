@@ -7,22 +7,28 @@ import androidx.annotation.NonNull;
 
 public class Storage implements Serializable {
 
+    public static int B = 0;
+    public static int KB = 1;
+    public static int MB = 2;
+    public static int GB = 3;
+    public static int TB = 4;
+
     private long totalSpace;
     private long freeSpace;
     private long usedSpace;
-    private String partitionName;
+    private String name;
     private String path;
 
-    public Storage(long totalSpace, long freeSpace, String partitionName, String path) {
+    public Storage(long totalSpace, long freeSpace, String name, String path) {
         this.totalSpace = totalSpace;
         this.freeSpace = freeSpace;
         this.usedSpace = totalSpace - freeSpace;
-        this.partitionName = partitionName;
+        this.name = name;
         this.path = path;
     }
 
     public Storage(File file) {
-        this.partitionName = file.getName();
+        this.name = file.getName();
         this.freeSpace = file.getFreeSpace();
         this.totalSpace = file.getTotalSpace();
         this.usedSpace = totalSpace - freeSpace;
@@ -53,12 +59,12 @@ public class Storage implements Serializable {
         this.freeSpace = freeSpace;
     }
 
-    public String getPartitionName() {
-        return partitionName;
+    public String getName() {
+        return name;
     }
 
-    public void setPartitionName(String partitionName) {
-        this.partitionName = partitionName;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getPath() {
@@ -75,7 +81,7 @@ public class Storage implements Serializable {
         return "Storage{" +
                 "totalSpace=" + totalSpace +
                 ", freeSpace=" + freeSpace +
-                ", partitionName='" + partitionName + '\'' +
+                ", name='" + name + '\'' +
                 ", path='" + path + '\'' +
                 '}';
     }
@@ -93,12 +99,12 @@ public class Storage implements Serializable {
     public int hashCode() {
         int result = (int) (totalSpace ^ (totalSpace >>> 32));
         result = 31 * result + (int) (freeSpace ^ (freeSpace >>> 32));
-        result = 31 * result + partitionName.hashCode();
+        result = 31 * result + name.hashCode();
         return result;
     }
 
     public static String getInBestFormat(double size) {
-        int best = findBestFormat(size);
+        int best = getStorageType(size);
         double d = round(size / Math.pow(10, best * 3));
         String s = Double.toString(d);
         switch (best) {
@@ -116,7 +122,12 @@ public class Storage implements Serializable {
         }
     }
 
-    private static int findBestFormat(double d) {
+    public static double getInBestFormatDouble(double size) {
+        int best = getStorageType(size);
+        return round(size / Math.pow(10, best * 3));
+    }
+
+    public static int getStorageType(double d) {
         for (int i = 1; i < 5; i++) {
             if (Math.pow(10, i * 3) > d) {
                 return i - 1;

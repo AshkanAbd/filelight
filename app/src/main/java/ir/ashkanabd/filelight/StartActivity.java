@@ -64,7 +64,7 @@ public class StartActivity extends AppCompatActivity {
     private Storage getInternalStorage() {
         File file = Environment.getExternalStorageDirectory();
         Storage storage = new Storage(file);
-        storage.setPartitionName("Internal");
+        storage.setName("Internal");
         return storage;
     }
 
