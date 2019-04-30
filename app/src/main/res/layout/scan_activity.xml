@@ -7,13 +7,13 @@
     android:layout_height="match_parent"
     tools:context=".ScanActivity">
 
-    <!--<ir.ashkanabd.filelight.view.StoragePieChart-->
+    <!--<ir.ashkanabd.filelight.view.pie.StoragePieChart-->
     <!--android:id="@+id/main_chart"-->
     <!--android:layout_width="match_parent"-->
-    <!--android:background="@color/colorAccent"-->
     <!--android:layout_height="wrap_content"-->
     <!--android:layout_centerInParent="true"-->
-    <!--android:layout_margin="20dp" />-->
+    <!--android:layout_margin="20dp"-->
+    <!--android:background="@color/colorAccent" />-->
 
 
     <TextView
@@ -21,6 +21,34 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_centerHorizontal="true" />
+
+    <RadioGroup
+        android:id="@+id/chart_mode_group"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="20dp">
+
+        <androidx.appcompat.widget.AppCompatRadioButton
+            android:id="@+id/pie_chart_radio_btn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:gravity="center_vertical"
+            android:text="  Pie chart"
+            android:textSize="18sp" />
+
+        <androidx.appcompat.widget.AppCompatRadioButton
+            android:id="@+id/other_chart_radio_btn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:gravity="center_vertical"
+            android:text="  Other chart"
+            android:textSize="18sp" />
+
+    </RadioGroup>
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/back_press_btn"

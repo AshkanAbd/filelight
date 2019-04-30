@@ -1,4 +1,4 @@
-package ir.ashkanabd.filelight.view;
+package ir.ashkanabd.filelight.view.piechart;
 
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -26,8 +26,10 @@ import java.util.List;
 
 import ir.ashkanabd.filelight.ScanActivity;
 import ir.ashkanabd.filelight.storage.Storage;
+import ir.ashkanabd.filelight.view.ChartClickListener;
+import ir.ashkanabd.filelight.view.StorageEntry;
 
-public class StorageRenderer extends PieChartRenderer {
+public class PieStorageRenderer extends PieChartRenderer {
     private PieEntry currentEntry;
     private Paint mEntryLabelsPaint;
     private ChartClickListener chartClickListener;
@@ -35,7 +37,7 @@ public class StorageRenderer extends PieChartRenderer {
     private RectF mInnerRectBuffer = new RectF();
     private ScanActivity scanActivity;
 
-    public StorageRenderer(PieChart chart, ChartAnimator animator, ViewPortHandler viewPortHandler, ScanActivity scanActivity) {
+    public PieStorageRenderer(PieChart chart, ChartAnimator animator, ViewPortHandler viewPortHandler, ScanActivity scanActivity) {
         super(chart, animator, viewPortHandler);
         mEntryLabelsPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mEntryLabelsPaint.setColor(Color.WHITE);
