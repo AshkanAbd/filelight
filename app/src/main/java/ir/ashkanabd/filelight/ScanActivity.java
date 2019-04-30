@@ -107,7 +107,7 @@ public class ScanActivity extends AppCompatActivity {
         PieData pieData = new PieData(pieDataSet);
 
         pieChart = createChart();
-        StorageRenderer renderer = new StorageRenderer(pieChart, pieChart.getAnimator(), pieChart.getViewPortHandler());
+        StorageRenderer renderer = new StorageRenderer(pieChart, pieChart.getAnimator(), pieChart.getViewPortHandler(), this);
         renderer.setChartClickListener(this::onChartClicked);
         pieChart.setRenderer(renderer);
         pieChart.getLegend().setEnabled(false);
@@ -227,8 +227,11 @@ public class ScanActivity extends AppCompatActivity {
         }
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        System.out.println(data);
+    public Node getSelectedNode() {
+        return selectedNode;
+    }
+
+    public void setSelectedNode(Node selectedNode) {
+        this.selectedNode = selectedNode;
     }
 }
