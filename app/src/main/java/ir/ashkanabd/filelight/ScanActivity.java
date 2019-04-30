@@ -16,20 +16,13 @@ import android.view.View;
 import android.widget.RelativeLayout;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.github.mikephil.charting.charts.Chart;
 import com.github.mikephil.charting.charts.PieChart;
-import com.github.mikephil.charting.components.MarkerView;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
-import com.github.mikephil.charting.formatter.DefaultValueFormatter;
-import com.github.mikephil.charting.formatter.LargeValueFormatter;
-import com.github.mikephil.charting.formatter.ValueFormatter;
-import com.github.mikephil.charting.renderer.DataRenderer;
-import com.github.mikephil.charting.renderer.PieChartRenderer;
+import com.github.mikephil.charting.utils.Utils;
 
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -39,8 +32,9 @@ public class ScanActivity extends AppCompatActivity {
     private Storage storage;
     private MaterialDialog loadingDialog;
     private RelativeLayout mainLayout;
-    private StoragePieChart mainChart;
+    private StoragePieChart pieChart;
     private Node rootNode;
+    private Node currentNode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,8 +62,6 @@ public class ScanActivity extends AppCompatActivity {
 
     private void findViews() {
         mainLayout = findViewById(R.id.scan_main_layout);
-        mainChart = findViewById(R.id.main_chart);
-        mainChart.setVisibility(View.INVISIBLE);
     }
 
     private Void startTask() {
@@ -86,25 +78,27 @@ public class ScanActivity extends AppCompatActivity {
 
     private void postExecute() {
         loadingDialog.dismiss();
-        setupChart(rootNode);
+        Utils.init(this);
+        currentNode = rootNode;
+        setupChart(rootNode.getChildren());
     }
 
-    private void setupChart(Node node) {
+    private void setupChart(List<Node> nodeList) {
         List<PieEntry> entryList = new ArrayList<>();
         StorageEntry other = new StorageEntry(0, "Other");
-        for (Node child : node.getChildren()) {
-            if (child.getLength() < 10 * Math.pow(10, 3)) {
+        for (Node child : nodeList) {
+            if (child.getLength() < Math.pow(10, 3)) {
                 other.setY(other.getY() + child.getLength());
+                other.addNode(child);
                 continue;
             }
-            StorageEntry entry = new StorageEntry((float) Storage.getInBestFormatDouble(child.getLength()), child.getFile().getName());
+            StorageEntry entry = new StorageEntry(child.getLength(), child.getFile().getName());
             entry.setStorageType(Storage.getStorageType(child.getLength()));
             entry.setNode(child);
             entryList.add(entry);
         }
         if (other.getY() != 0) {
             other.setStorageType(Storage.getStorageType(other.getY()));
-            other.setY((float) Storage.getInBestFormatDouble(other.getY()));
             entryList.add(other);
         }
         PieDataSet pieDataSet = new PieDataSet(entryList, null);
@@ -118,18 +112,45 @@ public class ScanActivity extends AppCompatActivity {
 
         PieData pieData = new PieData(pieDataSet);
 
-        StorageRenderer renderer = new StorageRenderer(mainChart, mainChart.getAnimator(), mainChart.getViewPortHandler());
+        pieChart = createChart();
+        StorageRenderer renderer = new StorageRenderer(pieChart, pieChart.getAnimator(), pieChart.getViewPortHandler());
         renderer.setChartClickListener(this::onChartClicked);
-        mainChart.setRenderer(renderer);
-        mainChart.getLegend().setEnabled(false);
-        mainChart.setData(pieData);
-        mainChart.setCenterTextSize(20);
-        mainChart.setCenterText(storage.getName() + " storage");
-        mainChart.setVisibility(View.VISIBLE);
+        pieChart.setRenderer(renderer);
+        pieChart.getLegend().setEnabled(false);
+        pieChart.setData(pieData);
+        pieChart.setCenterTextSize(20);
+        pieChart.setCenterText(storage.getName() + " storage");
     }
 
     private void onChartClicked(StorageEntry storageEntry) {
-        if (storageEntry != null)
-            System.out.println(storageEntry.getNode());
+        if (storageEntry.getNode() == null) {
+            pieChart.setVisibility(View.GONE);
+            setupChart(storageEntry.getNodeList());
+        } else {
+            if (!storageEntry.getNode().getChildren().isEmpty()) {
+                currentNode = storageEntry.getNode();
+                pieChart.setVisibility(View.GONE);
+                setupChart(currentNode.getChildren());
+            }
+        }
+    }
+
+    private StoragePieChart createChart() {
+        StoragePieChart pieChart = new StoragePieChart(this);
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(-1, -1);
+        int margin = MeasUtils.pxToDp(20, this);
+        params.setMargins(margin, margin, margin, margin);
+        params.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
+        pieChart.setLayoutParams(params);
+        mainLayout.addView(pieChart);
+        return pieChart;
+    }
+
+    public void backToParent(View view) {
+        if (currentNode.getParent() != null) {
+            pieChart.setVisibility(View.GONE);
+            currentNode = currentNode.getParent();
+            setupChart(currentNode.getChildren());
+        }
     }
 }

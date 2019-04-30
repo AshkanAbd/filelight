@@ -80,6 +80,9 @@ public class Node {
         if (root) {
             builder.append(", root");
         }
+        if (parent != null) {
+            builder.append(", parent= ").append(parent.file.getName());
+        }
         if (!children.isEmpty()) {
             builder.append(", children= ").append(children);
         }

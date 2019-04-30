@@ -289,18 +289,8 @@ public class StorageRenderer extends PieChartRenderer {
 
     @Override
     public void drawValue(Canvas c, String valueText, float x, float y, int color) {
-        StorageEntry storageEntry = (StorageEntry) currentEntry;
-        if (storageEntry.getStorageType() == Storage.B) {
-            valueText = valueText + " B";
-        } else if (storageEntry.getStorageType() == Storage.KB) {
-            valueText = valueText + " KB";
-        } else if (storageEntry.getStorageType() == Storage.MB) {
-            valueText = valueText + " MB";
-        } else if (storageEntry.getStorageType() == Storage.GB) {
-            valueText = valueText + " GB";
-        } else if (storageEntry.getStorageType() == Storage.TB) {
-            valueText = valueText + " TB";
-        }
+        valueText = valueText.replace(",", "");
+        valueText = Storage.getInBestFormat(Double.parseDouble(valueText));
         super.drawValue(c, valueText, x, y, color);
     }
 
