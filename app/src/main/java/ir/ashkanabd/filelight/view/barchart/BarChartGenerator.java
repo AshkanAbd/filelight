@@ -50,7 +50,7 @@ public class BarChartGenerator {
         barChart = createChart();
         StorageBarChartRenderer renderer = new StorageBarChartRenderer(barChart, barChart.getAnimator()
                 , barChart.getViewPortHandler(), scanActivity);
-        renderer.setClickListener(barChartClickListener);
+        renderer.setBarChartClickListener(barChartClickListener);
 
         barChart.setRenderer(renderer);
         barChart.getLegend().setEnabled(false);

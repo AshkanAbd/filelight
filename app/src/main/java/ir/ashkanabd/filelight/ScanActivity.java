@@ -46,7 +46,7 @@ public class ScanActivity extends AppCompatActivity {
     private Node rootNode;
     private Node selectedNode;
     private boolean isOther = false;
-    private int chartMode = BAR;
+    private int chartMode = PIE;
     private PieChartGenerator pieChartGenerator;
     private BarChartGenerator barChartGenerator;
 
