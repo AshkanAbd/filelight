@@ -1,11 +1,15 @@
-package ir.ashkanabd.filelight.view.piechart;
+package ir.ashkanabd.filelight.view.barchart;
 
 import android.graphics.Color;
 import android.widget.RelativeLayout;
 
-import com.github.mikephil.charting.data.PieData;
-import com.github.mikephil.charting.data.PieDataSet;
-import com.github.mikephil.charting.data.PieEntry;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.BarDataSet;
+import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.renderer.BarChartRenderer;
+import com.github.mikephil.charting.renderer.XAxisRenderer;
+import com.github.mikephil.charting.utils.Transformer;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -14,51 +18,50 @@ import java.util.List;
 import java.util.Map;
 
 import ir.ashkanabd.filelight.ScanActivity;
-import ir.ashkanabd.filelight.storage.Storage;
 import ir.ashkanabd.filelight.storage.explore.Node;
 import ir.ashkanabd.filelight.view.ChartClickListener;
 import ir.ashkanabd.filelight.view.MeasUtils;
 
-public class PieChartGenerator {
-    private StoragePieChart pieChart;
+public class BarChartGenerator {
+    private StorageBarChart barChart;
     private Node currentNode;
     private ChartClickListener chartClickListener;
     private ScanActivity scanActivity;
 
-    public PieChartGenerator(ScanActivity scanActivity, Node currentNode) {
+    public BarChartGenerator(ScanActivity scanActivity, Node currentNode) {
         this.scanActivity = scanActivity;
         this.currentNode = currentNode;
     }
 
-    public void setupPieChart(List<Node> nodeList) {
+    public void setupBarChart(List<Node> nodeList) {
         Runtime.getRuntime().gc();
-        List<PieEntry> entryList = createEntryList(nodeList);
-        PieDataSet pieDataSet = new PieDataSet(entryList, null);
-        pieDataSet.setColors(Color.parseColor("#408AF8"), Color.parseColor("#D8433C")
+        List<BarEntry> entryList = createEntryList(nodeList);
+        for (int i = 0; i < entryList.size(); i++) {
+            entryList.get(i).setX(i * 2);
+        }
+        BarDataSet barDataSet = new BarDataSet(entryList, null);
+        barDataSet.setColors(Color.parseColor("#408AF8"), Color.parseColor("#D8433C")
                 , Color.parseColor("#F2AF3A"), Color.parseColor("#279B5E"));
-        Collections.shuffle(pieDataSet.getColors());
-        pieDataSet.setSliceSpace(2);
-        pieDataSet.setValueTextColor(Color.WHITE);
-        pieDataSet.setValueTextSize(15);
-        pieDataSet.setSelectionShift(10f);
-        pieDataSet.setAutomaticallyDisableSliceSpacing(true);
+        Collections.shuffle(barDataSet.getColors());
+        barDataSet.setValueTextColor(Color.BLACK);
+        barDataSet.setValueTextSize(10);
 
-        PieData pieData = new PieData(pieDataSet);
+        BarData barData = new BarData(barDataSet);
 
-        pieChart = createChart();
-        PieStorageRenderer renderer = new PieStorageRenderer(pieChart, pieChart.getAnimator(), pieChart.getViewPortHandler(), scanActivity);
-        renderer.setChartClickListener(chartClickListener);
-        pieChart.setRenderer(renderer);
-        pieChart.getLegend().setEnabled(false);
-        pieChart.setData(pieData);
-        pieChart.setCenterTextSize(15);
-        pieChart.setCenterText(currentNode.getFile().getAbsolutePath() + "\n\nsize: " + Storage.getInBestFormat(currentNode.getLength()));
+        barChart = createChart();
+        BarChartRenderer renderer = new BarStorageRenderer(barChart, barChart.getAnimator(), barChart.getViewPortHandler());
+        barChart.setRenderer(renderer);
+        barChart.getLegend().setEnabled(false);
+        barChart.setData(barData);
+        XAxisRenderer xAxisRenderer = new XAxisRenderer(barChart.getViewPortHandler(), new XAxis(), new Transformer(barChart.getViewPortHandler()));
+        barChart.setXAxisRenderer(xAxisRenderer);
+
     }
 
-    private List<PieEntry> createEntryList(List<Node> nodeList) {
-        StoragePieEntry hidden = new StoragePieEntry(0, ".Hidden");
+    private List<BarEntry> createEntryList(List<Node> nodeList) {
+        StorageBarEntry hidden = new StorageBarEntry(0, 0);
         List<Node> removeList = new ArrayList<>();
-        List<PieEntry> entryList = new ArrayList<>();
+        List<BarEntry> entryList = new ArrayList<>();
         for (Node node : nodeList) {
             if (node.getFile().isHidden() && node.getFile().isDirectory()) {
                 hidden.setY(hidden.getY() + node.getLength());
@@ -71,13 +74,13 @@ public class PieChartGenerator {
         }
         nodeList.removeAll(removeList);
         LinkedHashMap<Node, Long> childrenMap = getChildrenMap(nodeList);
-        StoragePieEntry other = new StoragePieEntry(0, "Other");
+        StorageBarEntry other = new StorageBarEntry(0, 0);
         int left = 7 - entryList.size();
         for (Map.Entry<Node, Long> entry : childrenMap.entrySet()) {
             if (entry.getKey().getFile().isFile()) continue;
             if (left != 0) {
                 left--;
-                StoragePieEntry storageEntry = new StoragePieEntry(entry.getValue(), entry.getKey().getFile().getName());
+                StorageBarEntry storageEntry = new StorageBarEntry(0, entry.getValue());
                 storageEntry.setNode(entry.getKey());
                 entryList.add(storageEntry);
             } else {
@@ -92,15 +95,15 @@ public class PieChartGenerator {
         return entryList;
     }
 
-    private StoragePieChart createChart() {
-        StoragePieChart pieChart = new StoragePieChart(scanActivity);
+    private StorageBarChart createChart() {
+        StorageBarChart barChart = new StorageBarChart(scanActivity);
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(-1, -1);
         int margin = MeasUtils.pxToDp(30, scanActivity);
         params.setMargins(margin, margin, margin, margin);
         params.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
-        pieChart.setLayoutParams(params);
-        scanActivity.getMainLayout().addView(pieChart);
-        return pieChart;
+        barChart.setLayoutParams(params);
+        scanActivity.getMainLayout().addView(barChart);
+        return barChart;
     }
 
     private LinkedHashMap<Node, Long> getChildrenMap(List<Node> nodeList) {
@@ -117,8 +120,8 @@ public class PieChartGenerator {
         return map;
     }
 
-    public StoragePieChart getPieChart() {
-        return pieChart;
+    public StorageBarChart getBarChart() {
+        return barChart;
     }
 
     public Node getCurrentNode() {

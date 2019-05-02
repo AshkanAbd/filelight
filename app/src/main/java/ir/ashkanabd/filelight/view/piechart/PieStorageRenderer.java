@@ -27,7 +27,6 @@ import java.util.List;
 import ir.ashkanabd.filelight.ScanActivity;
 import ir.ashkanabd.filelight.storage.Storage;
 import ir.ashkanabd.filelight.view.ChartClickListener;
-import ir.ashkanabd.filelight.view.StorageEntry;
 
 public class PieStorageRenderer extends PieChartRenderer {
     private PieEntry currentEntry;
@@ -512,7 +511,7 @@ public class PieStorageRenderer extends PieChartRenderer {
     @Override
     public void drawHighlighted(Canvas c, Highlight[] indices) {
         mDrawHighlighted(c, indices);
-        StorageEntry storageEntry = (StorageEntry) currentEntry;
+        StoragePieEntry storageEntry = (StoragePieEntry) currentEntry;
         chartClickListener.onChartClicked(storageEntry);
     }
 

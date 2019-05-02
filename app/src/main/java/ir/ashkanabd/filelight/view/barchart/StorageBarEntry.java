@@ -1,24 +1,20 @@
-package ir.ashkanabd.filelight.view;
+package ir.ashkanabd.filelight.view.barchart;
 
-import com.github.mikephil.charting.data.PieEntry;
+import com.github.mikephil.charting.data.BarEntry;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import ir.ashkanabd.filelight.storage.explore.Node;
 
-public class StorageEntry extends PieEntry {
+public class StorageBarEntry extends BarEntry {
     private int storageType;
     private Node node;
     private List<Node> nodeList;
 
-    public StorageEntry(float value, String label) {
-        super(value, label);
-    }
 
-    @Override
-    public String getLabel() {
-        return super.getLabel();
+    public StorageBarEntry(float x, float y) {
+        super(x, y);
     }
 
     public int getStorageType() {

@@ -1,31 +1,34 @@
 package ir.ashkanabd.filelight;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.AppCompatRadioButton;
 import es.dmoral.toasty.Toasty;
 import ir.ashkanabd.filelight.background.BackgroundTask;
 import ir.ashkanabd.filelight.storage.Storage;
 import ir.ashkanabd.filelight.storage.explore.Explorer;
 import ir.ashkanabd.filelight.storage.explore.Node;
-import ir.ashkanabd.filelight.view.StorageEntry;
+import ir.ashkanabd.filelight.view.barchart.BarChartGenerator;
+import ir.ashkanabd.filelight.view.piechart.StoragePieEntry;
 import ir.ashkanabd.filelight.view.piechart.PieChartGenerator;
 
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.RelativeLayout;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.github.mikephil.charting.utils.Utils;
+import com.rey.material.widget.Spinner;
 
 import java.util.List;
 import java.util.Objects;
 
 public class ScanActivity extends AppCompatActivity {
 
-    public static int PIE = 1;
-    public static int OTHER = 2;
+    public static int PIE = 0;
+    public static int BAR = 1;
+    public static int SUNBURST = 2;
 
     private Storage storage;
     private MaterialDialog loadingDialog;
@@ -34,8 +37,10 @@ public class ScanActivity extends AppCompatActivity {
     private Node selectedNode;
     private boolean isOther = false;
     private int chartMode = PIE;
-    private AppCompatRadioButton pieRadioButton, otherRadioButton;
+    private Spinner chartModeSpinner;
+    private ArrayAdapter<String> chartModeAdapter;
     private PieChartGenerator pieChartGenerator;
+    private BarChartGenerator barChartGenerator;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,10 +68,11 @@ public class ScanActivity extends AppCompatActivity {
 
     private void findViews() {
         mainLayout = findViewById(R.id.scan_main_layout);
-        pieRadioButton = findViewById(R.id.pie_chart_radio_btn);
-        otherRadioButton = findViewById(R.id.other_chart_radio_btn);
-        pieRadioButton.setOnClickListener(_1 -> changeChartMode(PIE));
-        otherRadioButton.setOnClickListener(_1 -> changeChartMode(OTHER));
+        chartModeSpinner = findViewById(R.id.chart_mode_spinner);
+        chartModeAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1);
+        chartModeAdapter.addAll("Pie", "Bar", "Sunburst");
+        chartModeSpinner.setAdapter(chartModeAdapter);
+        chartModeSpinner.setOnItemSelectedListener((_1, _2, position, _3) -> changeChartMode(position));
     }
 
     private Void startTask() {
@@ -86,6 +92,8 @@ public class ScanActivity extends AppCompatActivity {
         Utils.init(this);
         pieChartGenerator = new PieChartGenerator(this, rootNode);
         pieChartGenerator.setChartClickListener(this::onChartClicked);
+        barChartGenerator = new BarChartGenerator(this, rootNode);
+        barChartGenerator.setChartClickListener(this::onChartClicked);
         setupChart(rootNode.getChildren());
     }
 
@@ -94,11 +102,11 @@ public class ScanActivity extends AppCompatActivity {
         if (chartMode == PIE) {
             pieChartGenerator.setupPieChart(nodeList);
         } else {
-
+            barChartGenerator.setupBarChart(nodeList);
         }
     }
 
-    private void onChartClicked(StorageEntry storageEntry) {
+    private void onChartClicked(StoragePieEntry storageEntry) {
         if (storageEntry.getNode() == null) {
             setupChart(storageEntry.getNodeList());
             isOther = true;
@@ -147,6 +155,9 @@ public class ScanActivity extends AppCompatActivity {
     private void removeChart() {
         if (pieChartGenerator.getPieChart() != null) {
             pieChartGenerator.getPieChart().setVisibility(View.GONE);
+        }
+        if (barChartGenerator.getBarChart() != null) {
+            barChartGenerator.getBarChart().setVisibility(View.GONE);
         }
     }
 
