@@ -9,9 +9,9 @@ import ir.ashkanabd.filelight.storage.explore.Node;
 
 public class StorageBarEntry extends BarEntry {
     private int storageType;
+    private String label;
     private Node node;
     private List<Node> nodeList;
-
 
     public StorageBarEntry(float x, float y) {
         super(x, y);
@@ -42,5 +42,13 @@ public class StorageBarEntry extends BarEntry {
 
     public void setNode(Node node) {
         this.node = node;
+    }
+
+    public String getLabel() {
+        return label;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
     }
 }

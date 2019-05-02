@@ -3,6 +3,7 @@ package ir.ashkanabd.filelight.view.piechart;
 import android.graphics.Color;
 import android.widget.RelativeLayout;
 
+import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
@@ -13,6 +14,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import ir.ashkanabd.filelight.R;
 import ir.ashkanabd.filelight.ScanActivity;
 import ir.ashkanabd.filelight.storage.Storage;
 import ir.ashkanabd.filelight.storage.explore.Node;
@@ -20,7 +22,7 @@ import ir.ashkanabd.filelight.view.ChartClickListener;
 import ir.ashkanabd.filelight.view.MeasUtils;
 
 public class PieChartGenerator {
-    private StoragePieChart pieChart;
+    private PieChart pieChart;
     private Node currentNode;
     private ChartClickListener chartClickListener;
     private ScanActivity scanActivity;
@@ -46,7 +48,7 @@ public class PieChartGenerator {
         PieData pieData = new PieData(pieDataSet);
 
         pieChart = createChart();
-        PieStorageRenderer renderer = new PieStorageRenderer(pieChart, pieChart.getAnimator(), pieChart.getViewPortHandler(), scanActivity);
+        StoragePieChartRenderer renderer = new StoragePieChartRenderer(pieChart, pieChart.getAnimator(), pieChart.getViewPortHandler(), scanActivity);
         renderer.setChartClickListener(chartClickListener);
         pieChart.setRenderer(renderer);
         pieChart.getLegend().setEnabled(false);
@@ -92,12 +94,14 @@ public class PieChartGenerator {
         return entryList;
     }
 
-    private StoragePieChart createChart() {
-        StoragePieChart pieChart = new StoragePieChart(scanActivity);
+    private PieChart createChart() {
+        PieChart pieChart = new PieChart(scanActivity);
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(-1, -1);
         int margin = MeasUtils.pxToDp(30, scanActivity);
         params.setMargins(margin, margin, margin, margin);
         params.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
+        params.addRule(RelativeLayout.BELOW, R.id.chart_mode_spinner);
+        params.addRule(RelativeLayout.ABOVE, R.id.open_dir_btn);
         pieChart.setLayoutParams(params);
         scanActivity.getMainLayout().addView(pieChart);
         return pieChart;
@@ -117,7 +121,7 @@ public class PieChartGenerator {
         return map;
     }
 
-    public StoragePieChart getPieChart() {
+    public PieChart getPieChart() {
         return pieChart;
     }
 

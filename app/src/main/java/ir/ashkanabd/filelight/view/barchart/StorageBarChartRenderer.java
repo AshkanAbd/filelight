@@ -11,8 +11,8 @@ import com.github.mikephil.charting.utils.ViewPortHandler;
 
 import ir.ashkanabd.filelight.storage.Storage;
 
-public class BarStorageRenderer extends BarChartRenderer {
-    public BarStorageRenderer(BarDataProvider chart, ChartAnimator animator, ViewPortHandler viewPortHandler) {
+public class StorageBarChartRenderer extends BarChartRenderer {
+    public StorageBarChartRenderer(BarDataProvider chart, ChartAnimator animator, ViewPortHandler viewPortHandler) {
         super(chart, animator, viewPortHandler);
     }
 

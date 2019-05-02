@@ -28,7 +28,7 @@ import ir.ashkanabd.filelight.ScanActivity;
 import ir.ashkanabd.filelight.storage.Storage;
 import ir.ashkanabd.filelight.view.ChartClickListener;
 
-public class PieStorageRenderer extends PieChartRenderer {
+public class StoragePieChartRenderer extends PieChartRenderer {
     private PieEntry currentEntry;
     private Paint mEntryLabelsPaint;
     private ChartClickListener chartClickListener;
@@ -36,7 +36,7 @@ public class PieStorageRenderer extends PieChartRenderer {
     private RectF mInnerRectBuffer = new RectF();
     private ScanActivity scanActivity;
 
-    public PieStorageRenderer(PieChart chart, ChartAnimator animator, ViewPortHandler viewPortHandler, ScanActivity scanActivity) {
+    public StoragePieChartRenderer(PieChart chart, ChartAnimator animator, ViewPortHandler viewPortHandler, ScanActivity scanActivity) {
         super(chart, animator, viewPortHandler);
         mEntryLabelsPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mEntryLabelsPaint.setColor(Color.WHITE);

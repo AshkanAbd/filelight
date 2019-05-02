@@ -3,13 +3,13 @@ package ir.ashkanabd.filelight.view.barchart;
 import android.graphics.Color;
 import android.widget.RelativeLayout;
 
+import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.renderer.BarChartRenderer;
 import com.github.mikephil.charting.renderer.XAxisRenderer;
-import com.github.mikephil.charting.utils.Transformer;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -17,13 +17,14 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import ir.ashkanabd.filelight.R;
 import ir.ashkanabd.filelight.ScanActivity;
 import ir.ashkanabd.filelight.storage.explore.Node;
 import ir.ashkanabd.filelight.view.ChartClickListener;
 import ir.ashkanabd.filelight.view.MeasUtils;
 
 public class BarChartGenerator {
-    private StorageBarChart barChart;
+    private BarChart barChart;
     private Node currentNode;
     private ChartClickListener chartClickListener;
     private ScanActivity scanActivity;
@@ -49,13 +50,20 @@ public class BarChartGenerator {
         BarData barData = new BarData(barDataSet);
 
         barChart = createChart();
-        BarChartRenderer renderer = new BarStorageRenderer(barChart, barChart.getAnimator(), barChart.getViewPortHandler());
+        BarChartRenderer renderer = new StorageBarChartRenderer(barChart, barChart.getAnimator(), barChart.getViewPortHandler());
         barChart.setRenderer(renderer);
         barChart.getLegend().setEnabled(false);
         barChart.setData(barData);
-        XAxisRenderer xAxisRenderer = new XAxisRenderer(barChart.getViewPortHandler(), new XAxis(), new Transformer(barChart.getViewPortHandler()));
-        barChart.setXAxisRenderer(xAxisRenderer);
+        XAxis xAxis = barChart.getXAxis();
+        xAxis.setLabelRotationAngle(-40);
+        xAxis.setLabelCount(entryList.size(), false);
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+        xAxis.setDrawGridLines(false);
+        xAxis.setValueFormatter(new StorageBarValueFormatter(entryList));
 
+        XAxisRenderer xAxisRenderer = new XAxisRenderer(barChart.getViewPortHandler(), xAxis, barChart.getRendererXAxis().getTransformer());
+
+        barChart.setXAxisRenderer(xAxisRenderer);
     }
 
     private List<BarEntry> createEntryList(List<Node> nodeList) {
@@ -70,6 +78,7 @@ public class BarChartGenerator {
             }
         }
         if (hidden.getY() != 0) {
+            hidden.setLabel(".Hidden");
             entryList.add(hidden);
         }
         nodeList.removeAll(removeList);
@@ -82,6 +91,7 @@ public class BarChartGenerator {
                 left--;
                 StorageBarEntry storageEntry = new StorageBarEntry(0, entry.getValue());
                 storageEntry.setNode(entry.getKey());
+                storageEntry.setLabel(entry.getKey().getFile().getName());
                 entryList.add(storageEntry);
             } else {
                 other.setY(other.getY() + entry.getValue());
@@ -89,18 +99,21 @@ public class BarChartGenerator {
             }
         }
         if (other.getY() != 0) {
+            other.setLabel("Other");
             entryList.add(other);
         }
         Collections.sort(entryList, (o1, o2) -> Float.compare(o1.getY(), o2.getY()));
         return entryList;
     }
 
-    private StorageBarChart createChart() {
-        StorageBarChart barChart = new StorageBarChart(scanActivity);
-        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(-1, -1);
+    private BarChart createChart() {
+        BarChart barChart = new BarChart(scanActivity);
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(-1, -2);
         int margin = MeasUtils.pxToDp(30, scanActivity);
-        params.setMargins(margin, margin, margin, margin);
+        params.setMargins(margin, margin, margin, MeasUtils.pxToDp(40, scanActivity));
         params.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
+        params.addRule(RelativeLayout.BELOW, R.id.chart_mode_spinner);
+        params.addRule(RelativeLayout.ABOVE, R.id.open_dir_btn);
         barChart.setLayoutParams(params);
         scanActivity.getMainLayout().addView(barChart);
         return barChart;
@@ -120,7 +133,7 @@ public class BarChartGenerator {
         return map;
     }
 
-    public StorageBarChart getBarChart() {
+    public BarChart getBarChart() {
         return barChart;
     }
 

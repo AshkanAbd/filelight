@@ -24,7 +24,6 @@ public class StorageViewHolder extends RecyclerView.ViewHolder implements View.O
         super(layout);
         this.layout = layout;
         this.clickListener = clickListener;
-        this.layout.setOnClickListener(this);
     }
 
     public ArcProgress getArcProgress() {
@@ -41,6 +40,7 @@ public class StorageViewHolder extends RecyclerView.ViewHolder implements View.O
 
     public void setArcProgress(ArcProgress arcProgress) {
         this.arcProgress = arcProgress;
+        this.arcProgress.setOnClickListener(this);
     }
 
     public TextView getTotalSpaceTextView() {
