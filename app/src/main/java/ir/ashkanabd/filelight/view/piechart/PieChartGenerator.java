@@ -18,13 +18,12 @@ import ir.ashkanabd.filelight.R;
 import ir.ashkanabd.filelight.ScanActivity;
 import ir.ashkanabd.filelight.storage.Storage;
 import ir.ashkanabd.filelight.storage.explore.Node;
-import ir.ashkanabd.filelight.view.ChartClickListener;
 import ir.ashkanabd.filelight.view.MeasUtils;
 
 public class PieChartGenerator {
     private PieChart pieChart;
     private Node currentNode;
-    private ChartClickListener chartClickListener;
+    private PieChartClickListener pieChartClickListener;
     private ScanActivity scanActivity;
 
     public PieChartGenerator(ScanActivity scanActivity, Node currentNode) {
@@ -49,7 +48,7 @@ public class PieChartGenerator {
 
         pieChart = createChart();
         StoragePieChartRenderer renderer = new StoragePieChartRenderer(pieChart, pieChart.getAnimator(), pieChart.getViewPortHandler(), scanActivity);
-        renderer.setChartClickListener(chartClickListener);
+        renderer.setPieChartClickListener(pieChartClickListener);
         pieChart.setRenderer(renderer);
         pieChart.getLegend().setEnabled(false);
         pieChart.setData(pieData);
@@ -133,7 +132,7 @@ public class PieChartGenerator {
         this.currentNode = currentNode;
     }
 
-    public void setChartClickListener(ChartClickListener chartClickListener) {
-        this.chartClickListener = chartClickListener;
+    public void setPieChartClickListener(PieChartClickListener pieChartClickListener) {
+        this.pieChartClickListener = pieChartClickListener;
     }
 }

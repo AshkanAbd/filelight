@@ -7,6 +7,7 @@ import ir.ashkanabd.filelight.storage.Storage;
 import ir.ashkanabd.filelight.storage.explore.Explorer;
 import ir.ashkanabd.filelight.storage.explore.Node;
 import ir.ashkanabd.filelight.view.barchart.BarChartGenerator;
+import ir.ashkanabd.filelight.view.barchart.StorageBarEntry;
 import ir.ashkanabd.filelight.view.piechart.StoragePieEntry;
 import ir.ashkanabd.filelight.view.piechart.PieChartGenerator;
 
@@ -98,9 +99,9 @@ public class ScanActivity extends AppCompatActivity {
         findViews();
         Utils.init(this);
         pieChartGenerator = new PieChartGenerator(this, rootNode);
-        pieChartGenerator.setChartClickListener(this::onChartClicked);
+        pieChartGenerator.setPieChartClickListener(this::onPieChartClicked);
         barChartGenerator = new BarChartGenerator(this, rootNode);
-        barChartGenerator.setChartClickListener(this::onChartClicked);
+        barChartGenerator.setBarChartClickListener(this::onBarChartClicked);
         setupChart(rootNode.getChildren());
     }
 
@@ -182,7 +183,23 @@ public class ScanActivity extends AppCompatActivity {
         }
     }
 
-    private void onChartClicked(StoragePieEntry storageEntry) {
+    private void onPieChartClicked(StoragePieEntry storageEntry) {
+        if (storageEntry.getNode() == null) {
+            setupChart(storageEntry.getNodeList());
+            isOther = true;
+            selectedNode = null;
+        } else {
+            if (!storageEntry.getNode().getChildren().isEmpty() && !storageEntry.getNode().isAllFiles()) {
+                pieChartGenerator.setCurrentNode(storageEntry.getNode());
+                setupChart(pieChartGenerator.getCurrentNode().getChildren());
+                selectedNode = null;
+            } else {
+                selectedNode = storageEntry.getNode();
+            }
+        }
+    }
+
+    private void onBarChartClicked(StorageBarEntry storageEntry) {
         if (storageEntry.getNode() == null) {
             setupChart(storageEntry.getNodeList());
             isOther = true;

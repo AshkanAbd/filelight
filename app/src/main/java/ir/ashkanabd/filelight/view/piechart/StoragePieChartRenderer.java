@@ -26,12 +26,11 @@ import java.util.List;
 
 import ir.ashkanabd.filelight.ScanActivity;
 import ir.ashkanabd.filelight.storage.Storage;
-import ir.ashkanabd.filelight.view.ChartClickListener;
 
 public class StoragePieChartRenderer extends PieChartRenderer {
     private PieEntry currentEntry;
     private Paint mEntryLabelsPaint;
-    private ChartClickListener chartClickListener;
+    private PieChartClickListener pieChartClickListener;
     private Path mPathBuffer = new Path();
     private RectF mInnerRectBuffer = new RectF();
     private ScanActivity scanActivity;
@@ -512,7 +511,7 @@ public class StoragePieChartRenderer extends PieChartRenderer {
     public void drawHighlighted(Canvas c, Highlight[] indices) {
         mDrawHighlighted(c, indices);
         StoragePieEntry storageEntry = (StoragePieEntry) currentEntry;
-        chartClickListener.onChartClicked(storageEntry);
+        pieChartClickListener.onChartClicked(storageEntry);
     }
 
     private void mDrawHighlighted(Canvas c, Highlight[] indices) {
@@ -717,7 +716,7 @@ public class StoragePieChartRenderer extends PieChartRenderer {
         super.drawRoundedSlices(c);
     }
 
-    public void setChartClickListener(ChartClickListener chartClickListener) {
-        this.chartClickListener = chartClickListener;
+    public void setPieChartClickListener(PieChartClickListener pieChartClickListener) {
+        this.pieChartClickListener = pieChartClickListener;
     }
 }

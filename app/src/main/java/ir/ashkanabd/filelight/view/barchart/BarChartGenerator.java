@@ -8,7 +8,6 @@ import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
-import com.github.mikephil.charting.renderer.BarChartRenderer;
 import com.github.mikephil.charting.renderer.XAxisRenderer;
 
 import java.util.ArrayList;
@@ -20,13 +19,12 @@ import java.util.Map;
 import ir.ashkanabd.filelight.R;
 import ir.ashkanabd.filelight.ScanActivity;
 import ir.ashkanabd.filelight.storage.explore.Node;
-import ir.ashkanabd.filelight.view.ChartClickListener;
 import ir.ashkanabd.filelight.view.MeasUtils;
 
 public class BarChartGenerator {
     private BarChart barChart;
     private Node currentNode;
-    private ChartClickListener chartClickListener;
+    private BarChartClickListener barChartClickListener;
     private ScanActivity scanActivity;
 
     public BarChartGenerator(ScanActivity scanActivity, Node currentNode) {
@@ -50,7 +48,10 @@ public class BarChartGenerator {
         BarData barData = new BarData(barDataSet);
 
         barChart = createChart();
-        BarChartRenderer renderer = new StorageBarChartRenderer(barChart, barChart.getAnimator(), barChart.getViewPortHandler());
+        StorageBarChartRenderer renderer = new StorageBarChartRenderer(barChart, barChart.getAnimator()
+                , barChart.getViewPortHandler(), scanActivity);
+        renderer.setClickListener(barChartClickListener);
+
         barChart.setRenderer(renderer);
         barChart.getLegend().setEnabled(false);
         barChart.setData(barData);
@@ -145,7 +146,7 @@ public class BarChartGenerator {
         this.currentNode = currentNode;
     }
 
-    public void setChartClickListener(ChartClickListener chartClickListener) {
-        this.chartClickListener = chartClickListener;
+    public void setBarChartClickListener(BarChartClickListener barChartClickListener) {
+        this.barChartClickListener = barChartClickListener;
     }
 }
