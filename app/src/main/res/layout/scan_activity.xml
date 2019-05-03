@@ -33,7 +33,7 @@
 
     <com.rey.material.widget.Spinner
         android:id="@+id/chart_mode_spinner"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_centerHorizontal="true"
         android:layout_marginStart="20dp"

@@ -19,7 +19,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import androidx.annotation.IdRes;
 import ir.ashkanabd.filelight.R;
 import ir.ashkanabd.filelight.ScanActivity;
 import ir.ashkanabd.filelight.storage.Storage;
@@ -59,7 +58,7 @@ public class BarChartGenerator extends ChartGenerator {
         barChart.setData(barData);
 
         XAxis xAxis = barChart.getXAxis();
-        xAxis.setLabelRotationAngle(-40);
+        xAxis.setLabelRotationAngle(-35);
         xAxis.setLabelCount(entryList.size(), false);
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxis.setDrawGridLines(false);
