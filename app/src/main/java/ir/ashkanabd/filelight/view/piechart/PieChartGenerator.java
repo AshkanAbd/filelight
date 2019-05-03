@@ -101,6 +101,7 @@ public class PieChartGenerator extends ChartGenerator {
         params.addRule(RelativeLayout.ABOVE, R.id.open_dir_btn);
         pieChart.setLayoutParams(params);
         scanActivity.getMainLayout().addView(pieChart);
+        pieChart.setDescription(null);
         return pieChart;
     }
 

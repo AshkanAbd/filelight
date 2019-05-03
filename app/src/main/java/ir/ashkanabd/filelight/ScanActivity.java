@@ -12,25 +12,18 @@ import ir.ashkanabd.filelight.view.piechart.StoragePieEntry;
 import ir.ashkanabd.filelight.view.piechart.PieChartGenerator;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.anychart.AnyChart;
-import com.anychart.AnyChartView;
 import com.anychart.chart.common.dataentry.DataEntry;
-import com.anychart.charts.Sunburst;
-import com.anychart.enums.SunburstCalculationMode;
-import com.anychart.enums.TreeFillingMethod;
-import com.anychart.graphics.vector.text.HAlign;
 import com.github.mikephil.charting.utils.Utils;
 import com.rey.material.widget.Spinner;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -49,6 +42,7 @@ public class ScanActivity extends AppCompatActivity {
     private int chartMode = PIE;
     private PieChartGenerator pieChartGenerator;
     private BarChartGenerator barChartGenerator;
+    private TextView dirTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,6 +69,7 @@ public class ScanActivity extends AppCompatActivity {
 
     private void findViews() {
         mainLayout = findViewById(R.id.scan_main_layout);
+        dirTextView = findViewById(R.id.dir_text_view);
         Spinner chartModeSpinner = findViewById(R.id.chart_mode_spinner);
         ArrayAdapter<String> chartModeAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1);
         chartModeAdapter.addAll("Pie", "Bar"/*, "Sunburst"*/);
@@ -165,6 +160,10 @@ public class ScanActivity extends AppCompatActivity {
         }
     }
 
+    public TextView getDirTextView() {
+        return dirTextView;
+    }
+
     class CustomDataEntry extends DataEntry {
         CustomDataEntry(String name, String id) {
             setValue("name", name);
@@ -222,12 +221,12 @@ public class ScanActivity extends AppCompatActivity {
             isOther = false;
             setupChart(pieChartGenerator.getCurrentNode().getChildren(), false);
             return;
-        }
-        if (pieChartGenerator.getCurrentNode().getParent() != null
+        } else if (pieChartGenerator.getCurrentNode().getParent() != null
                 && pieChartGenerator.getCurrentNode().getParent().getFile() != null) {
             pieChartGenerator.setCurrentNode(pieChartGenerator.getCurrentNode().getParent());
             setupChart(pieChartGenerator.getCurrentNode().getChildren(), false);
-        }
+        } else
+            Toasty.warning(this, "You are in root folder", Toasty.LENGTH_SHORT, true).show();
         selectedNode = null;
     }
 
@@ -250,9 +249,11 @@ public class ScanActivity extends AppCompatActivity {
     private void removeChart() {
         if (pieChartGenerator.getPieChart() != null) {
             pieChartGenerator.getPieChart().setVisibility(View.GONE);
+            dirTextView.setVisibility(View.GONE);
         }
         if (barChartGenerator.getBarChart() != null) {
             barChartGenerator.getBarChart().setVisibility(View.GONE);
+            dirTextView.setVisibility(View.GONE);
         }
         /*if (anyChartView != null) {
             anyChartView.setVisibility(View.GONE);

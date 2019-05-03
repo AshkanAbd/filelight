@@ -15,13 +15,15 @@
     <!--android:layout_margin="20dp"-->
     <!--android:background="@color/colorAccent" />-->
 
-
-    <com.anychart.AnyChartView
+    <TextView
+        android:id="@+id/dir_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:backgroundTint="@color/colorPrimaryDark">
-
-    </com.anychart.AnyChartView>
+        android:layout_below="@id/chart_mode_spinner"
+        android:layout_centerHorizontal="true"
+        android:textColor="#000"
+        android:layout_marginTop="10dp"
+        android:gravity="center" />
 
     <TextView
         android:id="@+id/center_tv_scan"

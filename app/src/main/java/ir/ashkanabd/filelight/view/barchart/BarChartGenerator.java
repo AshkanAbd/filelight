@@ -1,7 +1,10 @@
 package ir.ashkanabd.filelight.view.barchart;
 
+import android.annotation.SuppressLint;
 import android.graphics.Color;
+import android.view.View;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.XAxis;
@@ -16,8 +19,10 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import androidx.annotation.IdRes;
 import ir.ashkanabd.filelight.R;
 import ir.ashkanabd.filelight.ScanActivity;
+import ir.ashkanabd.filelight.storage.Storage;
 import ir.ashkanabd.filelight.storage.explore.Node;
 import ir.ashkanabd.filelight.view.ChartGenerator;
 
@@ -44,7 +49,7 @@ public class BarChartGenerator extends ChartGenerator {
 
         BarData barData = new BarData(barDataSet);
 
-        barChart = createChart();
+        barChart = createChart(nodeList.get(0).getParent());
         StorageBarChartRenderer renderer = new StorageBarChartRenderer(barChart, barChart.getAnimator()
                 , barChart.getViewPortHandler(), scanActivity);
         renderer.setBarChartClickListener(barChartClickListener);
@@ -109,14 +114,18 @@ public class BarChartGenerator extends ChartGenerator {
         return entryList;
     }
 
-    private BarChart createChart() {
+    private BarChart createChart(Node parent) {
         BarChart barChart = new BarChart(scanActivity);
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(-1, -2);
         params.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
-        params.addRule(RelativeLayout.BELOW, R.id.chart_mode_spinner);
+        params.addRule(RelativeLayout.BELOW, R.id.dir_text_view);
         params.addRule(RelativeLayout.ABOVE, R.id.open_dir_btn);
         barChart.setLayoutParams(params);
         scanActivity.getMainLayout().addView(barChart);
+        barChart.setDescription(null);
+        scanActivity.getDirTextView().setVisibility(View.VISIBLE);
+        String str = parent.getFile().getAbsolutePath() + "\nsize: " + Storage.getInBestFormat(parent.getLength());
+        scanActivity.getDirTextView().setText(str);
         return barChart;
     }
 
