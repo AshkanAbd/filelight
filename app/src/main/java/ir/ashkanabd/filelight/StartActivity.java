@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import es.dmoral.toasty.Toasty;
 import ir.ashkanabd.filelight.background.BackgroundTask;
 import ir.ashkanabd.filelight.storage.Storage;
@@ -12,6 +13,7 @@ import ir.ashkanabd.filelight.view.StorageAdapter;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -26,7 +28,7 @@ public class StartActivity extends AppCompatActivity {
     private static String LOGGER = "FileLight";
     private RecyclerView recyclerView;
     private ArrayList<Storage> statusList;
-    private StorageAdapter storageAdapter;
+    private SwipeRefreshLayout refreshStorage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +55,7 @@ public class StartActivity extends AppCompatActivity {
         statusList = new ArrayList<>();
         statusList.add(getInternalStorage());
         for (File file : ContextCompat.getExternalFilesDirs(this, null)) {
+            if (file == null) continue;
             File file1 = file.getParentFile().getParentFile().getParentFile().getParentFile();
             Storage storage = new Storage(file1);
             if (!statusList.contains(storage)) {
@@ -69,7 +72,7 @@ public class StartActivity extends AppCompatActivity {
     }
 
     private void setupPartitionList() {
-        storageAdapter = new StorageAdapter(this, statusList, this::onStorageClicked);
+        StorageAdapter storageAdapter = new StorageAdapter(this, statusList, this::onStorageClicked);
         GridLayoutManager layoutManager = new GridLayoutManager(this, 2);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(storageAdapter);
@@ -84,6 +87,14 @@ public class StartActivity extends AppCompatActivity {
 
     private void findViews() {
         recyclerView = findViewById(R.id.recycle_view);
+        refreshStorage = findViewById(R.id.refresh_storage);
+        refreshStorage.setColorSchemeColors(Color.parseColor("#408AF8"), Color.parseColor("#D8433C")
+                , Color.parseColor("#F2AF3A"), Color.parseColor("#279B5E"));
+        refreshStorage.setOnRefreshListener(() -> {
+            findPartition();
+            setupPartitionList();
+            refreshStorage.setRefreshing(false);
+        });
     }
 
     private void checkPermission() {

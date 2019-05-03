@@ -4,7 +4,10 @@
     android:layout_width="200dp"
     android:layout_height="wrap_content"
     android:layout_gravity="center"
-    android:padding="15dp">
+    android:paddingStart="15dp"
+    android:paddingTop="30dp"
+    android:paddingEnd="15dp"
+    android:paddingBottom="15dp">
 
     <com.github.lzyzsd.circleprogress.ArcProgress
         android:id="@+id/arc_progress"
@@ -12,8 +15,8 @@
         android:layout_height="100dp"
         android:layout_centerHorizontal="true"
         app:arc_bottom_text="status"
-        app:arc_text_color="@color/colorPrimaryDark"
         app:arc_finished_color="#F00"
+        app:arc_text_color="@color/colorPrimaryDark"
         app:arc_unfinished_color="@color/colorPrimary" />
 
     <TextView

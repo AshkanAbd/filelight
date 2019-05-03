@@ -1,5 +1,6 @@
 package ir.ashkanabd.filelight;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
 import es.dmoral.toasty.Toasty;
@@ -7,18 +8,25 @@ import ir.ashkanabd.filelight.background.BackgroundTask;
 import ir.ashkanabd.filelight.storage.Storage;
 import ir.ashkanabd.filelight.storage.explore.Explorer;
 import ir.ashkanabd.filelight.storage.explore.Node;
+import ir.ashkanabd.filelight.view.MeasUtils;
 import ir.ashkanabd.filelight.view.barchart.BarChartGenerator;
 import ir.ashkanabd.filelight.view.barchart.StorageBarEntry;
 import ir.ashkanabd.filelight.view.piechart.StoragePieEntry;
 import ir.ashkanabd.filelight.view.piechart.PieChartGenerator;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.anychart.chart.common.dataentry.DataEntry;
@@ -61,6 +69,7 @@ public class ScanActivity extends AppCompatActivity {
     private void preExecute() {
         storage = (Storage) Objects.requireNonNull(getIntent().getExtras()).get("storage");
         setupMaterialDialog();
+        setupActionbar();
     }
 
     private void setupMaterialDialog() {
@@ -68,6 +77,50 @@ public class ScanActivity extends AppCompatActivity {
         loadingDialog.setContentView(R.layout.scan_loading);
         loadingDialog.setCancelable(false);
         loadingDialog.show();
+    }
+
+    private void setupActionbar() {
+        RelativeLayout layout = new RelativeLayout(this);
+
+        Button refreshButton = new Button(this);
+        refreshButton.setBackground(getResources().getDrawable(R.drawable.refresh_icon));
+        RelativeLayout.LayoutParams refreshParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, -2);
+        refreshParams.width = MeasUtils.dpToPx(25, this);
+        refreshParams.height = MeasUtils.dpToPx(25, this);
+        refreshParams.addRule(RelativeLayout.ALIGN_PARENT_END, RelativeLayout.TRUE);
+        refreshParams.addRule(RelativeLayout.CENTER_VERTICAL, RelativeLayout.TRUE);
+        refreshParams.setMarginEnd(MeasUtils.dpToPx(10, this));
+        refreshButton.setLayoutParams(refreshParams);
+        refreshButton.setOnClickListener(_1 -> refreshTree());
+        layout.addView(refreshButton);
+
+        TextView appTitleTextView = new TextView(this);
+        appTitleTextView.setGravity(Gravity.CENTER);
+        appTitleTextView.setTextColor(Color.WHITE);
+        appTitleTextView.setText(getString(R.string.app_name));
+        appTitleTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
+        RelativeLayout.LayoutParams appTitleParams = new RelativeLayout.LayoutParams(-2, -2);
+        appTitleParams.addRule(RelativeLayout.ALIGN_PARENT_START, RelativeLayout.TRUE);
+        appTitleParams.addRule(RelativeLayout.CENTER_VERTICAL, RelativeLayout.TRUE);
+        appTitleTextView.setLayoutParams(appTitleParams);
+        layout.addView(appTitleTextView);
+
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setCustomView(layout);
+        actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+    }
+
+    private void refreshTree() {
+        BackgroundTask task = new BackgroundTask();
+        task.setPreExecute(loadingDialog::show);
+        task.setPostExecute(_1 -> refreshPostExecute());
+        task.setTaskExecute(_1 -> startTask());
+        task.execute();
+    }
+
+    private void refreshPostExecute() {
+        loadingDialog.dismiss();
+        setupChart(currentNode.getChildren(), false);
     }
 
     private void findViews() {
