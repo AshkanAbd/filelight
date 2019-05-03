@@ -10,12 +10,10 @@ import ir.ashkanabd.filelight.ScanActivity;
 import ir.ashkanabd.filelight.storage.explore.Node;
 
 public abstract class ChartGenerator {
-    protected Node currentNode;
     protected ScanActivity scanActivity;
 
-    protected ChartGenerator(ScanActivity scanActivity, Node currentNode) {
+    protected ChartGenerator(ScanActivity scanActivity) {
         this.scanActivity = scanActivity;
-        this.currentNode = currentNode;
     }
 
     protected LinkedHashMap<Node, Long> getChildrenMap(List<Node> nodeList) {
@@ -30,13 +28,5 @@ public abstract class ChartGenerator {
             map.put(entry.getKey(), entry.getValue());
         }
         return map;
-    }
-
-    public Node getCurrentNode() {
-        return currentNode;
-    }
-
-    public void setCurrentNode(Node currentNode) {
-        this.currentNode = currentNode;
     }
 }

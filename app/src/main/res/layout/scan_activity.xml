@@ -42,16 +42,16 @@
         android:layout_marginBottom="10dp"
         android:gravity="center_vertical"
         app:spn_arrowAnimDuration="300"
-        app:spn_arrowColor="@color/colorAccent"
+        app:spn_arrowColor="@color/colorPrimary"
         app:spn_arrowPadding="5dp"
         app:spn_arrowSize="4dp"
         app:spn_arrowSwitchMode="true"
-        app:spn_dividerColor="@color/colorAccent"
+        app:spn_dividerColor="@color/colorPrimary"
         app:spn_dividerHeight="2dp"
         app:spn_dividerPadding="5dp"
         app:spn_label="Chart mode"
         app:spn_labelEnable="true"
-        app:spn_labelTextColor="@color/colorPrimary"
+        app:spn_labelTextColor="@color/colorPrimaryDark"
         app:spn_labelTextSize="12sp" />
 
     <androidx.appcompat.widget.AppCompatButton

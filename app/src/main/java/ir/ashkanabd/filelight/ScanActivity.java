@@ -38,6 +38,7 @@ public class ScanActivity extends AppCompatActivity {
     private RelativeLayout mainLayout;
     private Node rootNode;
     private Node selectedNode;
+    private Node currentNode;
     private boolean isOther = false;
     private int chartMode = PIE;
     private PieChartGenerator pieChartGenerator;
@@ -93,11 +94,12 @@ public class ScanActivity extends AppCompatActivity {
         loadingDialog.dismiss();
         findViews();
         Utils.init(this);
-        pieChartGenerator = new PieChartGenerator(this, rootNode);
+        pieChartGenerator = new PieChartGenerator(this);
         pieChartGenerator.setPieChartClickListener(this::onPieChartClicked);
-        barChartGenerator = new BarChartGenerator(this, rootNode);
+        barChartGenerator = new BarChartGenerator(this);
         barChartGenerator.setBarChartClickListener(this::onBarChartClicked);
-        setupChart(rootNode.getChildren(), false);
+        currentNode = rootNode;
+        setupChart(currentNode.getChildren(), false);
     }
 
     private void setupChart(List<Node> nodeList, boolean showHidden) {
@@ -191,8 +193,8 @@ public class ScanActivity extends AppCompatActivity {
             selectedNode = null;
         } else {
             if (!storageEntry.getNode().getChildren().isEmpty() && !storageEntry.getNode().isAllFiles()) {
-                pieChartGenerator.setCurrentNode(storageEntry.getNode());
-                setupChart(pieChartGenerator.getCurrentNode().getChildren(), false);
+                currentNode = storageEntry.getNode();
+                setupChart(currentNode.getChildren(), false);
                 selectedNode = null;
             } else {
                 selectedNode = storageEntry.getNode();
@@ -207,8 +209,8 @@ public class ScanActivity extends AppCompatActivity {
             selectedNode = null;
         } else {
             if (!storageEntry.getNode().getChildren().isEmpty() && !storageEntry.getNode().isAllFiles()) {
-                pieChartGenerator.setCurrentNode(storageEntry.getNode());
-                setupChart(pieChartGenerator.getCurrentNode().getChildren(), false);
+                currentNode = storageEntry.getNode();
+                setupChart(currentNode.getChildren(), false);
                 selectedNode = null;
             } else {
                 selectedNode = storageEntry.getNode();
@@ -219,12 +221,11 @@ public class ScanActivity extends AppCompatActivity {
     public void backToParent(View view) {
         if (isOther) {
             isOther = false;
-            setupChart(pieChartGenerator.getCurrentNode().getChildren(), false);
+            setupChart(currentNode.getChildren(), false);
             return;
-        } else if (pieChartGenerator.getCurrentNode().getParent() != null
-                && pieChartGenerator.getCurrentNode().getParent().getFile() != null) {
-            pieChartGenerator.setCurrentNode(pieChartGenerator.getCurrentNode().getParent());
-            setupChart(pieChartGenerator.getCurrentNode().getChildren(), false);
+        } else if (currentNode.getParent() != null && currentNode.getParent().getFile() != null) {
+            currentNode = currentNode.getParent();
+            setupChart(currentNode.getChildren(), false);
         } else
             Toasty.warning(this, "You are in root folder", Toasty.LENGTH_SHORT, true).show();
         selectedNode = null;
@@ -235,7 +236,7 @@ public class ScanActivity extends AppCompatActivity {
         if (selectedNode != null)
             selectedUri = Uri.parse(selectedNode.getFile().getAbsolutePath());
         else
-            selectedUri = Uri.parse(pieChartGenerator.getCurrentNode().getFile().getAbsolutePath());
+            selectedUri = Uri.parse(currentNode.getFile().getAbsolutePath());
         Intent intent = new Intent(Intent.ACTION_VIEW);
         intent.setDataAndType(selectedUri, "resource/folder");
         System.out.println(selectedUri);
@@ -263,7 +264,7 @@ public class ScanActivity extends AppCompatActivity {
     private void changeChartMode(int mode) {
         if (chartMode == mode) return;
         chartMode = mode;
-        setupChart(pieChartGenerator.getCurrentNode().getChildren(), false);
+        setupChart(currentNode.getChildren(), false);
     }
 
     public Node getSelectedNode() {

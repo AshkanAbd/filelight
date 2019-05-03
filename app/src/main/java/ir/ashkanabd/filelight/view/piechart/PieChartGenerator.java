@@ -24,8 +24,8 @@ public class PieChartGenerator extends ChartGenerator {
     private PieChart pieChart;
     private PieChartClickListener pieChartClickListener;
 
-    public PieChartGenerator(ScanActivity scanActivity, Node currentNode) {
-        super(scanActivity, currentNode);
+    public PieChartGenerator(ScanActivity scanActivity) {
+        super(scanActivity);
     }
 
     public void setupPieChart(List<Node> nodeList, boolean showHidden) {
@@ -43,14 +43,13 @@ public class PieChartGenerator extends ChartGenerator {
 
         PieData pieData = new PieData(pieDataSet);
 
-        pieChart = createChart();
+        pieChart = createChart(nodeList.get(0).getParent());
         StoragePieChartRenderer renderer = new StoragePieChartRenderer(pieChart, pieChart.getAnimator(), pieChart.getViewPortHandler(), scanActivity);
         renderer.setPieChartClickListener(pieChartClickListener);
         pieChart.setRenderer(renderer);
         pieChart.getLegend().setEnabled(false);
         pieChart.setData(pieData);
         pieChart.setCenterTextSize(15);
-        pieChart.setCenterText(currentNode.getFile().getAbsolutePath() + "\n\nsize: " + Storage.getInBestFormat(currentNode.getLength()));
     }
 
     private List<PieEntry> createEntryList(List<Node> nodeList, boolean showHidden) {
@@ -93,7 +92,7 @@ public class PieChartGenerator extends ChartGenerator {
         return entryList;
     }
 
-    private PieChart createChart() {
+    private PieChart createChart(Node parent) {
         PieChart pieChart = new PieChart(scanActivity);
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(-1, -1);
         params.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
@@ -102,6 +101,7 @@ public class PieChartGenerator extends ChartGenerator {
         pieChart.setLayoutParams(params);
         scanActivity.getMainLayout().addView(pieChart);
         pieChart.setDescription(null);
+        pieChart.setCenterText(parent.getFile().getAbsolutePath() + "\n\nsize: " + Storage.getInBestFormat(parent.getLength()));
         return pieChart;
     }
 

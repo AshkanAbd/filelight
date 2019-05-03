@@ -12,7 +12,8 @@
         android:layout_height="100dp"
         android:layout_centerHorizontal="true"
         app:arc_bottom_text="status"
-        app:arc_finished_color="@color/colorAccent"
+        app:arc_text_color="@color/colorPrimaryDark"
+        app:arc_finished_color="#F00"
         app:arc_unfinished_color="@color/colorPrimary" />
 
     <TextView
@@ -24,7 +25,7 @@
         android:layout_alignEnd="@id/arc_progress"
         android:layout_marginTop="2dp"
         android:gravity="center"
-        android:textColor="@color/colorPrimary"
+        android:textColor="@color/colorPrimaryDark"
         android:textSize="10dp"
         android:textStyle="bold" />
 
@@ -37,7 +38,7 @@
         android:layout_alignEnd="@id/arc_progress"
         android:layout_marginTop="2dp"
         android:gravity="center"
-        android:textColor="@color/colorPrimary"
+        android:textColor="@color/colorPrimaryDark"
         android:textSize="10dp"
         android:textStyle="bold" />
 
@@ -50,7 +51,7 @@
         android:layout_alignEnd="@id/arc_progress"
         android:layout_marginTop="2dp"
         android:gravity="center"
-        android:textColor="@color/colorPrimary"
+        android:textColor="@color/colorPrimaryDark"
         android:textSize="10dp"
         android:textStyle="bold" />
 
@@ -63,7 +64,7 @@
         android:layout_alignEnd="@id/arc_progress"
         android:layout_marginTop="2dp"
         android:gravity="center"
-        android:textColor="@color/colorPrimary"
+        android:textColor="@color/colorPrimaryDark"
         android:textSize="10dp"
         android:textStyle="bold" />
 

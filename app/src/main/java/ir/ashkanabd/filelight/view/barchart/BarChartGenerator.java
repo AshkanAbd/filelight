@@ -1,10 +1,8 @@
 package ir.ashkanabd.filelight.view.barchart;
 
-import android.annotation.SuppressLint;
 import android.graphics.Color;
 import android.view.View;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.XAxis;
@@ -29,8 +27,8 @@ public class BarChartGenerator extends ChartGenerator {
     private BarChart barChart;
     private BarChartClickListener barChartClickListener;
 
-    public BarChartGenerator(ScanActivity scanActivity, Node currentNode) {
-        super(scanActivity, currentNode);
+    public BarChartGenerator(ScanActivity scanActivity) {
+        super(scanActivity);
     }
 
     public void setupBarChart(List<Node> nodeList, boolean hidden) {
