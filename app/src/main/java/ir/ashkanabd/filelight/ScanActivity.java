@@ -1,6 +1,7 @@
 package ir.ashkanabd.filelight;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatButton;
 import es.dmoral.toasty.Toasty;
 import ir.ashkanabd.filelight.background.BackgroundTask;
 import ir.ashkanabd.filelight.storage.Storage;
@@ -44,6 +45,7 @@ public class ScanActivity extends AppCompatActivity {
     private PieChartGenerator pieChartGenerator;
     private BarChartGenerator barChartGenerator;
     private TextView dirTextView;
+    private AppCompatButton backDirButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,6 +73,7 @@ public class ScanActivity extends AppCompatActivity {
     private void findViews() {
         mainLayout = findViewById(R.id.scan_main_layout);
         dirTextView = findViewById(R.id.dir_text_view);
+        backDirButton = findViewById(R.id.back_dir_btn);
         Spinner chartModeSpinner = findViewById(R.id.chart_mode_spinner);
         ArrayAdapter<String> chartModeAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1);
         chartModeAdapter.addAll("Pie", "Bar"/*, "Sunburst"*/);
@@ -103,7 +106,8 @@ public class ScanActivity extends AppCompatActivity {
     }
 
     private void setupChart(List<Node> nodeList, boolean showHidden) {
-        removeChart();
+        changeView();
+
         if (chartMode == PIE) {
             pieChartGenerator.setupPieChart(nodeList, showHidden);
         } else if (chartMode == BAR) {
@@ -188,14 +192,15 @@ public class ScanActivity extends AppCompatActivity {
 
     private void onPieChartClicked(StoragePieEntry storageEntry) {
         if (storageEntry.getNode() == null) {
-            setupChart(storageEntry.getNodeList(), storageEntry.getLabel().equals(".Hidden"));
             isOther = true;
             selectedNode = null;
+            setupChart(storageEntry.getNodeList(), storageEntry.getLabel().equals(".Hidden"));
         } else {
             if (!storageEntry.getNode().getChildren().isEmpty() && !storageEntry.getNode().isAllFiles()) {
                 currentNode = storageEntry.getNode();
                 setupChart(currentNode.getChildren(), false);
                 selectedNode = null;
+                isOther = false;
             } else {
                 selectedNode = storageEntry.getNode();
             }
@@ -212,6 +217,7 @@ public class ScanActivity extends AppCompatActivity {
                 currentNode = storageEntry.getNode();
                 setupChart(currentNode.getChildren(), false);
                 selectedNode = null;
+                isOther = false;
             } else {
                 selectedNode = storageEntry.getNode();
             }
@@ -247,7 +253,12 @@ public class ScanActivity extends AppCompatActivity {
         }
     }
 
-    private void removeChart() {
+    private void changeView() {
+        if ((currentNode.getParent() != null && currentNode.getParent().getFile() != null) || isOther) {
+            backDirButton.setVisibility(View.VISIBLE);
+        } else {
+            backDirButton.setVisibility(View.GONE);
+        }
         if (pieChartGenerator.getPieChart() != null) {
             pieChartGenerator.getPieChart().setVisibility(View.GONE);
             dirTextView.setVisibility(View.GONE);

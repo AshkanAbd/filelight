@@ -55,10 +55,10 @@
         app:spn_labelTextSize="12sp" />
 
     <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/back_press_btn"
-        android:layout_width="wrap_content"
+        android:id="@+id/open_dir_btn"
+        android:layout_width="match_parent"
         android:layout_height="40dp"
-        android:layout_alignEnd="@id/center_tv_scan"
+        android:layout_toStartOf="@id/back_dir_btn"
         android:layout_alignParentStart="true"
         android:layout_alignParentBottom="true"
         android:layout_marginStart="20dp"
@@ -72,7 +72,7 @@
         android:textSize="16sp" />
 
     <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/open_dir_btn"
+        android:id="@+id/back_dir_btn"
         android:layout_width="wrap_content"
         android:layout_height="40dp"
         android:layout_alignStart="@id/center_tv_scan"
@@ -82,10 +82,10 @@
         android:layout_marginTop="10dp"
         android:layout_marginEnd="20dp"
         android:layout_marginBottom="20dp"
-        android:layout_toEndOf="@id/back_press_btn"
         android:background="@color/colorPrimary"
         android:onClick="backToParent"
         android:text="Back"
+        android:visibility="gone"
         android:textAllCaps="false"
         android:textColor="#FFF"
         android:textSize="16sp" />
