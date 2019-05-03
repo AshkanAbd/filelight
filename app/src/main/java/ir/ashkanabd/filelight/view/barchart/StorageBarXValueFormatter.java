@@ -6,10 +6,10 @@ import com.github.mikephil.charting.formatter.ValueFormatter;
 
 import java.util.List;
 
-public class StorageBarValueFormatter extends ValueFormatter {
+public class StorageBarXValueFormatter extends ValueFormatter {
     private List<BarEntry> entryList;
 
-    public StorageBarValueFormatter(List<BarEntry> entryList) {
+    public StorageBarXValueFormatter(List<BarEntry> entryList) {
         super();
         this.entryList = entryList;
     }

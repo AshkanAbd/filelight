@@ -5,10 +5,10 @@ import android.widget.RelativeLayout;
 
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
-import com.github.mikephil.charting.renderer.XAxisRenderer;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -55,16 +55,18 @@ public class BarChartGenerator {
         barChart.setRenderer(renderer);
         barChart.getLegend().setEnabled(false);
         barChart.setData(barData);
+
         XAxis xAxis = barChart.getXAxis();
         xAxis.setLabelRotationAngle(-40);
         xAxis.setLabelCount(entryList.size(), false);
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxis.setDrawGridLines(false);
-        xAxis.setValueFormatter(new StorageBarValueFormatter(entryList));
+        xAxis.setValueFormatter(new StorageBarXValueFormatter(entryList));
 
-        XAxisRenderer xAxisRenderer = new XAxisRenderer(barChart.getViewPortHandler(), xAxis, barChart.getRendererXAxis().getTransformer());
+        barChart.getAxisRight().setEnabled(false);
 
-        barChart.setXAxisRenderer(xAxisRenderer);
+        YAxis yAxis = barChart.getAxisLeft();
+        yAxis.setValueFormatter(new StorageBarYValueFormatter());
     }
 
     private List<BarEntry> createEntryList(List<Node> nodeList) {
@@ -110,8 +112,10 @@ public class BarChartGenerator {
     private BarChart createChart() {
         BarChart barChart = new BarChart(scanActivity);
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(-1, -2);
-        int margin = MeasUtils.pxToDp(30, scanActivity);
-        params.setMargins(margin, margin, margin, MeasUtils.pxToDp(40, scanActivity));
+        int margin = MeasUtils.dpToPx(10, scanActivity);
+        params.setMargins(0, margin, 0, MeasUtils.dpToPx(20, scanActivity));
+        params.setMarginEnd(MeasUtils.dpToPx(10, scanActivity));
+        params.setMarginStart(MeasUtils.dpToPx(10, scanActivity));
         params.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
         params.addRule(RelativeLayout.BELOW, R.id.chart_mode_spinner);
         params.addRule(RelativeLayout.ABOVE, R.id.open_dir_btn);
