@@ -113,7 +113,7 @@ public class BarChartGenerator {
         BarChart barChart = new BarChart(scanActivity);
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(-1, -2);
         int margin = MeasUtils.dpToPx(10, scanActivity);
-        params.setMargins(0, margin, 0, MeasUtils.dpToPx(20, scanActivity));
+        params.setMargins(0, margin, 0, MeasUtils.dpToPx(25, scanActivity));
         params.setMarginEnd(MeasUtils.dpToPx(10, scanActivity));
         params.setMarginStart(MeasUtils.dpToPx(10, scanActivity));
         params.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);

@@ -109,6 +109,17 @@ public class StorageBarChartRenderer extends BarChartRenderer {
     @Override
     public void drawValue(Canvas c, String valueText, float x, float y, int color) {
         valueText = valueText.replace(",", "");
+        valueText = valueText.replace("٬", "");
+        valueText = valueText.replace("۱", "1");
+        valueText = valueText.replace("۲", "2");
+        valueText = valueText.replace("۳", "3");
+        valueText = valueText.replace("۴", "4");
+        valueText = valueText.replace("۵", "5");
+        valueText = valueText.replace("۶", "6");
+        valueText = valueText.replace("۷", "7");
+        valueText = valueText.replace("۸", "8");
+        valueText = valueText.replace("۹", "9");
+        valueText = valueText.replace("۰", "0");
         valueText = Storage.getInBestFormat(Double.parseDouble(valueText));
         super.drawValue(c, valueText, x, y, color);
     }

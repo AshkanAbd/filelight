@@ -46,7 +46,7 @@ public class ScanActivity extends AppCompatActivity {
     private Node rootNode;
     private Node selectedNode;
     private boolean isOther = false;
-    private int chartMode = BAR;
+    private int chartMode = PIE;
     private PieChartGenerator pieChartGenerator;
     private BarChartGenerator barChartGenerator;
 
@@ -77,7 +77,7 @@ public class ScanActivity extends AppCompatActivity {
         mainLayout = findViewById(R.id.scan_main_layout);
         Spinner chartModeSpinner = findViewById(R.id.chart_mode_spinner);
         ArrayAdapter<String> chartModeAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1);
-        chartModeAdapter.addAll("Pie", "Bar", "Sunburst");
+        chartModeAdapter.addAll("Pie", "Bar"/*, "Sunburst"*/);
         chartModeSpinner.setAdapter(chartModeAdapter);
         chartModeSpinner.setOnItemSelectedListener((_1, _2, position, _3) -> changeChartMode(position));
     }
@@ -132,7 +132,7 @@ public class ScanActivity extends AppCompatActivity {
 
         List<DataEntry> data = new ArrayList<>();
         Node parent = nodeList.get(0).getParent();
-        readTree(parent, data);
+        readTree(parent, data, 1, 3);
 
         sunburst.data(data, TreeFillingMethod.AS_TABLE);
 
@@ -150,16 +150,17 @@ public class ScanActivity extends AppCompatActivity {
         anyChartView.setChart(sunburst);
     }
 
-    private void readTree(Node parent, List<DataEntry> dataEntries) {
+    private void readTree(Node parent, List<DataEntry> dataEntries, int deep, int maxDeep) {
         if (parent.isAllFiles()) return;
         if (parent.getChildren().isEmpty()) return;
+        if (deep > maxDeep) return;
         for (Node node : parent.getChildren()) {
             if (!node.getFile().isDirectory()) continue;
             CustomDataEntry entry = new CustomDataEntry(node.getFile().getName(), node.getFile().getAbsolutePath());
             entry.setValue("parent", node.getParent().getFile().getAbsolutePath());
             entry.setValue("value", (int) node.getLength());
             dataEntries.add(entry);
-            readTree(node, dataEntries);
+            readTree(node, dataEntries, deep + 1, maxDeep);
         }
     }
 
@@ -273,5 +274,15 @@ public class ScanActivity extends AppCompatActivity {
 
     public RelativeLayout getMainLayout() {
         return mainLayout;
+    }
+
+    @Override
+    public void onTrimMemory(int level) {
+        super.onTrimMemory(level);
+    }
+
+    @Override
+    public void onLowMemory() {
+        super.onLowMemory();
     }
 }
