@@ -17,9 +17,9 @@
 
 
     <com.anychart.AnyChartView
-        android:backgroundTint="@color/colorPrimaryDark"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/colorPrimaryDark">
 
     </com.anychart.AnyChartView>
 
@@ -31,12 +31,13 @@
 
     <com.rey.material.widget.Spinner
         android:id="@+id/chart_mode_spinner"
-        android:layout_width="120dp"
+        android:layout_width="wrap_content"
         android:layout_height="50dp"
-        android:layout_alignParentStart="true"
+        android:layout_centerHorizontal="true"
         android:layout_marginStart="20dp"
         android:layout_marginTop="20dp"
         android:layout_marginEnd="20dp"
+        android:layout_marginBottom="10dp"
         android:gravity="center_vertical"
         app:spn_arrowAnimDuration="300"
         app:spn_arrowColor="@color/colorAccent"
@@ -76,6 +77,7 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
         android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
         android:layout_marginEnd="20dp"
         android:layout_marginBottom="20dp"
         android:layout_toEndOf="@id/back_press_btn"

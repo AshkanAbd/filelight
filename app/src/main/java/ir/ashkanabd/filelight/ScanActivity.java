@@ -102,20 +102,21 @@ public class ScanActivity extends AppCompatActivity {
         pieChartGenerator.setPieChartClickListener(this::onPieChartClicked);
         barChartGenerator = new BarChartGenerator(this, rootNode);
         barChartGenerator.setBarChartClickListener(this::onBarChartClicked);
-        setupChart(rootNode.getChildren());
+        setupChart(rootNode.getChildren(), false);
     }
 
-    private void setupChart(List<Node> nodeList) {
+    private void setupChart(List<Node> nodeList, boolean showHidden) {
         removeChart();
         if (chartMode == PIE) {
-            pieChartGenerator.setupPieChart(nodeList);
+            pieChartGenerator.setupPieChart(nodeList, showHidden);
         } else if (chartMode == BAR) {
-            barChartGenerator.setupBarChart(nodeList);
+            barChartGenerator.setupBarChart(nodeList, showHidden);
         } else if (chartMode == SUNBURST) {
-            sunBurst(nodeList);
+//            sunBurst(nodeList);
         }
     }
 
+    /*
     private AnyChartView anyChartView;
 
     private void sunBurst(List<Node> nodeList) {
@@ -148,7 +149,7 @@ public class ScanActivity extends AppCompatActivity {
         sunburst.tooltip().format("Employee: {%leavesSum}");
 
         anyChartView.setChart(sunburst);
-    }
+    }*/
 
     private void readTree(Node parent, List<DataEntry> dataEntries, int deep, int maxDeep) {
         if (parent.isAllFiles()) return;
@@ -186,13 +187,13 @@ public class ScanActivity extends AppCompatActivity {
 
     private void onPieChartClicked(StoragePieEntry storageEntry) {
         if (storageEntry.getNode() == null) {
-            setupChart(storageEntry.getNodeList());
+            setupChart(storageEntry.getNodeList(), storageEntry.getLabel().equals(".Hidden"));
             isOther = true;
             selectedNode = null;
         } else {
             if (!storageEntry.getNode().getChildren().isEmpty() && !storageEntry.getNode().isAllFiles()) {
                 pieChartGenerator.setCurrentNode(storageEntry.getNode());
-                setupChart(pieChartGenerator.getCurrentNode().getChildren());
+                setupChart(pieChartGenerator.getCurrentNode().getChildren(), false);
                 selectedNode = null;
             } else {
                 selectedNode = storageEntry.getNode();
@@ -202,13 +203,13 @@ public class ScanActivity extends AppCompatActivity {
 
     private void onBarChartClicked(StorageBarEntry storageEntry) {
         if (storageEntry.getNode() == null) {
-            setupChart(storageEntry.getNodeList());
+            setupChart(storageEntry.getNodeList(), storageEntry.getLabel().equals(".Hidden"));
             isOther = true;
             selectedNode = null;
         } else {
             if (!storageEntry.getNode().getChildren().isEmpty() && !storageEntry.getNode().isAllFiles()) {
                 pieChartGenerator.setCurrentNode(storageEntry.getNode());
-                setupChart(pieChartGenerator.getCurrentNode().getChildren());
+                setupChart(pieChartGenerator.getCurrentNode().getChildren(), false);
                 selectedNode = null;
             } else {
                 selectedNode = storageEntry.getNode();
@@ -219,13 +220,13 @@ public class ScanActivity extends AppCompatActivity {
     public void backToParent(View view) {
         if (isOther) {
             isOther = false;
-            setupChart(pieChartGenerator.getCurrentNode().getChildren());
+            setupChart(pieChartGenerator.getCurrentNode().getChildren(), false);
             return;
         }
         if (pieChartGenerator.getCurrentNode().getParent() != null
                 && pieChartGenerator.getCurrentNode().getParent().getFile() != null) {
             pieChartGenerator.setCurrentNode(pieChartGenerator.getCurrentNode().getParent());
-            setupChart(pieChartGenerator.getCurrentNode().getChildren());
+            setupChart(pieChartGenerator.getCurrentNode().getChildren(), false);
         }
         selectedNode = null;
     }
@@ -253,15 +254,15 @@ public class ScanActivity extends AppCompatActivity {
         if (barChartGenerator.getBarChart() != null) {
             barChartGenerator.getBarChart().setVisibility(View.GONE);
         }
-        if (anyChartView != null) {
+        /*if (anyChartView != null) {
             anyChartView.setVisibility(View.GONE);
-        }
+        }*/
     }
 
     private void changeChartMode(int mode) {
         if (chartMode == mode) return;
         chartMode = mode;
-        setupChart(pieChartGenerator.getCurrentNode().getChildren());
+        setupChart(pieChartGenerator.getCurrentNode().getChildren(), false);
     }
 
     public Node getSelectedNode() {

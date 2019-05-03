@@ -19,22 +19,19 @@ import java.util.Map;
 import ir.ashkanabd.filelight.R;
 import ir.ashkanabd.filelight.ScanActivity;
 import ir.ashkanabd.filelight.storage.explore.Node;
-import ir.ashkanabd.filelight.view.MeasUtils;
+import ir.ashkanabd.filelight.view.ChartGenerator;
 
-public class BarChartGenerator {
+public class BarChartGenerator extends ChartGenerator {
     private BarChart barChart;
-    private Node currentNode;
     private BarChartClickListener barChartClickListener;
-    private ScanActivity scanActivity;
 
     public BarChartGenerator(ScanActivity scanActivity, Node currentNode) {
-        this.scanActivity = scanActivity;
-        this.currentNode = currentNode;
+        super(scanActivity, currentNode);
     }
 
-    public void setupBarChart(List<Node> nodeList) {
+    public void setupBarChart(List<Node> nodeList, boolean hidden) {
         Runtime.getRuntime().gc();
-        List<BarEntry> entryList = createEntryList(nodeList);
+        List<BarEntry> entryList = createEntryList(nodeList, hidden);
         for (int i = 0; i < entryList.size(); i++) {
             entryList.get(i).setX(i * 2);
         }
@@ -69,23 +66,26 @@ public class BarChartGenerator {
         yAxis.setValueFormatter(new StorageBarYValueFormatter());
     }
 
-    private List<BarEntry> createEntryList(List<Node> nodeList) {
-        StorageBarEntry hidden = new StorageBarEntry(0, 0);
-        List<Node> removeList = new ArrayList<>();
+    private List<BarEntry> createEntryList(List<Node> nodeList, boolean showHidden) {
         List<BarEntry> entryList = new ArrayList<>();
-        for (Node node : nodeList) {
-            if (node.getFile().isHidden() && node.getFile().isDirectory()) {
-                hidden.setY(hidden.getY() + node.getLength());
-                hidden.addNode(node);
-                removeList.add(node);
+        List<Node> notHiddenList = new ArrayList<>(nodeList);
+        if (!showHidden) {
+            List<Node> removeList = new ArrayList<>();
+            StorageBarEntry hidden = new StorageBarEntry(0, 0);
+            for (Node node : nodeList) {
+                if (node.getFile().isHidden() && node.getFile().isDirectory()) {
+                    hidden.setY(hidden.getY() + node.getLength());
+                    hidden.addNode(node);
+                    removeList.add(node);
+                }
             }
+            if (hidden.getY() != 0) {
+                hidden.setLabel(".Hidden");
+                entryList.add(hidden);
+            }
+            notHiddenList.removeAll(removeList);
         }
-        if (hidden.getY() != 0) {
-            hidden.setLabel(".Hidden");
-            entryList.add(hidden);
-        }
-        nodeList.removeAll(removeList);
-        LinkedHashMap<Node, Long> childrenMap = getChildrenMap(nodeList);
+        LinkedHashMap<Node, Long> childrenMap = getChildrenMap(notHiddenList);
         StorageBarEntry other = new StorageBarEntry(0, 0);
         int left = 7 - entryList.size();
         for (Map.Entry<Node, Long> entry : childrenMap.entrySet()) {
@@ -112,10 +112,6 @@ public class BarChartGenerator {
     private BarChart createChart() {
         BarChart barChart = new BarChart(scanActivity);
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(-1, -2);
-        int margin = MeasUtils.dpToPx(10, scanActivity);
-        params.setMargins(0, margin, 0, MeasUtils.dpToPx(25, scanActivity));
-        params.setMarginEnd(MeasUtils.dpToPx(10, scanActivity));
-        params.setMarginStart(MeasUtils.dpToPx(10, scanActivity));
         params.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
         params.addRule(RelativeLayout.BELOW, R.id.chart_mode_spinner);
         params.addRule(RelativeLayout.ABOVE, R.id.open_dir_btn);
@@ -124,30 +120,8 @@ public class BarChartGenerator {
         return barChart;
     }
 
-    private LinkedHashMap<Node, Long> getChildrenMap(List<Node> nodeList) {
-        LinkedHashMap<Node, Long> map = new LinkedHashMap<>();
-        for (Node node : nodeList) {
-            map.put(node, node.getLength());
-        }
-        List<Map.Entry<Node, Long>> entryList = new ArrayList<>(map.entrySet());
-        Collections.sort(entryList, (o1, o2) -> Long.compare(o2.getValue(), o1.getValue()));
-        map.clear();
-        for (Map.Entry<Node, Long> entry : entryList) {
-            map.put(entry.getKey(), entry.getValue());
-        }
-        return map;
-    }
-
     public BarChart getBarChart() {
         return barChart;
-    }
-
-    public Node getCurrentNode() {
-        return currentNode;
-    }
-
-    public void setCurrentNode(Node currentNode) {
-        this.currentNode = currentNode;
     }
 
     public void setBarChartClickListener(BarChartClickListener barChartClickListener) {

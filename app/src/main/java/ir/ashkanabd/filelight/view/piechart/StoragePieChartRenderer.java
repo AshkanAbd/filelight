@@ -494,13 +494,13 @@ public class StoragePieChartRenderer extends PieChartRenderer {
         valueText = valueText.replace("۸", "8");
         valueText = valueText.replace("۹", "9");
         valueText = valueText.replace("۰", "0");
-        valueText = Storage.getInBestFormat(Double.parseDouble(valueText));
+        valueText = Storage.getInBestFormat(Double.parseDouble(valueText)) + " " + currentEntry.getLabel();
         super.drawValue(c, valueText, x, y, color);
     }
 
     @Override
     protected void drawEntryLabel(Canvas c, String label, float x, float y) {
-        super.drawEntryLabel(c, label, x, y);
+//        super.drawEntryLabel(c, label, x, y);
     }
 
     @Override
